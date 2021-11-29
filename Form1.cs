@@ -124,7 +124,7 @@ namespace SFDemo
                     cmd.ExecuteNonQuery();
                     output = (string)parameter5.Value;
                     ReturnMessageToFlexUI(output);
-                    BackgroundProcess(formatOutputStr(DateTime.Now.ToString("hh:mm:ss"), InputStr, "SFReturn:", output));
+                    BackgroundProcess(formatOutputStr(DateTime.Now.ToLongTimeString().ToString(), InputStr, "SFReturn:", output));
                 }
             }
             catch (Exception ex)
@@ -191,7 +191,7 @@ namespace SFDemo
                     cmd.ExecuteNonQuery();
                     output = (string)parameter5.Value;
                     ReturnMessageToFlexUI(output);
-                    BackgroundProcess(formatOutputStr(DateTime.Now.ToString("hh:mm:ss"), InputStr, "SFReturn:" + output));
+                    BackgroundProcess(formatOutputStr(DateTime.Now.ToLongTimeString().ToString(), InputStr, "SFReturn:" + output));
                 }
             }
             catch (Exception ex)
@@ -206,7 +206,7 @@ namespace SFDemo
         {
             CrossThreadOperationControl CrossAdd = delegate ()
             {
-                if (SFlistBox.Items.Count >= 15)
+                if (SFlistBox.Items.Count >= 20)
                 {
                     SFlistBox.Items.Clear();
                 }

@@ -67,12 +67,13 @@ namespace SFDemo
             // 
             // SFlistBox
             // 
-            this.SFlistBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SFlistBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.SFlistBox.FormattingEnabled = true;
-            this.SFlistBox.ItemHeight = 25;
+            this.SFlistBox.HorizontalScrollbar = true;
+            this.SFlistBox.ItemHeight = 17;
             this.SFlistBox.Location = new System.Drawing.Point(6, 4);
             this.SFlistBox.Name = "SFlistBox";
-            this.SFlistBox.Size = new System.Drawing.Size(677, 379);
+            this.SFlistBox.Size = new System.Drawing.Size(677, 395);
             this.SFlistBox.TabIndex = 2;
             // 
             // HivePanel
@@ -87,11 +88,12 @@ namespace SFDemo
             // HivelistBox
             // 
             this.HivelistBox.BackColor = System.Drawing.SystemColors.Window;
+            this.HivelistBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.HivelistBox.FormattingEnabled = true;
-            this.HivelistBox.ItemHeight = 25;
+            this.HivelistBox.ItemHeight = 17;
             this.HivelistBox.Location = new System.Drawing.Point(6, 4);
             this.HivelistBox.Name = "HivelistBox";
-            this.HivelistBox.Size = new System.Drawing.Size(677, 379);
+            this.HivelistBox.Size = new System.Drawing.Size(677, 395);
             this.HivelistBox.TabIndex = 2;
             // 
             // tableLayoutPanel1
