@@ -50,6 +50,7 @@ namespace SFDemo
             this.HeadPanel = new System.Windows.Forms.Panel();
             this.currentPaneltext = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.FlexUIStatus = new System.Windows.Forms.Label();
             this.SFPanel.SuspendLayout();
             this.HivePanel.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -115,6 +116,7 @@ namespace SFDemo
             // HiveButton
             // 
             this.HiveButton.BackColor = System.Drawing.Color.White;
+            this.HiveButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.HiveButton.Location = new System.Drawing.Point(0, 89);
             this.HiveButton.Margin = new System.Windows.Forms.Padding(0);
             this.HiveButton.Name = "HiveButton";
@@ -127,6 +129,7 @@ namespace SFDemo
             // SFButton
             // 
             this.SFButton.BackColor = System.Drawing.Color.White;
+            this.SFButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.SFButton.Location = new System.Drawing.Point(0, 0);
             this.SFButton.Margin = new System.Windows.Forms.Padding(0);
             this.SFButton.Name = "SFButton";
@@ -139,6 +142,7 @@ namespace SFDemo
             // HeadPanel
             // 
             this.HeadPanel.BackColor = System.Drawing.Color.White;
+            this.HeadPanel.Controls.Add(this.FlexUIStatus);
             this.HeadPanel.Controls.Add(this.currentPaneltext);
             this.HeadPanel.Controls.Add(this.pictureBox1);
             this.HeadPanel.Location = new System.Drawing.Point(10, 5);
@@ -168,6 +172,17 @@ namespace SFDemo
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
+            // 
+            // FlexUIStatus
+            // 
+            this.FlexUIStatus.AutoSize = true;
+            this.FlexUIStatus.BackColor = System.Drawing.Color.LimeGreen;
+            this.FlexUIStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.FlexUIStatus.Location = new System.Drawing.Point(709, 7);
+            this.FlexUIStatus.Name = "FlexUIStatus";
+            this.FlexUIStatus.Size = new System.Drawing.Size(73, 25);
+            this.FlexUIStatus.TabIndex = 5;
+            this.FlexUIStatus.Text = "FlexUI";
             // 
             // Form1
             // 
@@ -203,6 +218,7 @@ namespace SFDemo
         private System.Windows.Forms.Panel HivePanel;
         private System.Windows.Forms.ListBox HivelistBox;
         private System.Windows.Forms.Label currentPaneltext;
+        private System.Windows.Forms.Label FlexUIStatus;
     }
 }
 

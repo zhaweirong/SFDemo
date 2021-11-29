@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Data;
 using System.Data.Odbc;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace SFDemo
@@ -15,6 +16,7 @@ namespace SFDemo
     public partial class Form1 : Form
     {
         private System.Threading.Timer timer = null;
+        private System.Threading.Timer CheckProcesstimer = null;
 
         private Dictionary<string, string> SFVar;
 
@@ -23,6 +25,8 @@ namespace SFDemo
 
         private TrigVar SFcheckTrig = new TrigVar();
         private TrigVar SFlinkTrig = new TrigVar();
+
+        private bool StartPollingTrig = true;
 
         private string connectionString = ConfigurationManager.AppSettings["odbc"].ToString();
 
@@ -43,31 +47,57 @@ namespace SFDemo
             SFcheckSwitch = !String.IsNullOrEmpty(SFVar["CheckTrig"]);
             SFlinkSwitch = !String.IsNullOrEmpty(SFVar["LinkTrig"]);
 
+            FileUtilHelper.CreateDirectory(SFVar["Path"]);
+
             SFcheckTrig.PropertyChanged += SFcheck;
             SFlinkTrig.PropertyChanged += SFlink;
 
+            //Check FlexUI OPEN
+            CheckFlexUIProcess();
             //Get SFTrig from flexUI
             PollingTrig();
+        }
+
+        private void CheckFlexUIProcess()
+        {
+            CheckProcesstimer = new System.Threading.Timer((n) =>
+            {
+                Process[] processesClient = Process.GetProcessesByName("view");
+                if (processesClient.Length == 0)
+                {
+                    StartPollingTrig = false;
+                    FlexUIStatus.BackColor = System.Drawing.Color.Red;
+                    GC.Collect();
+                }
+                else
+                {
+                    StartPollingTrig = true;
+                    FlexUIStatus.BackColor = System.Drawing.Color.LimeGreen;
+                }
+            }, "1", 0, 10000);
         }
 
         private void PollingTrig()
         {
             timer = new System.Threading.Timer((n) =>
             {
-                FMDMOLib.Rundb rundb = new Rundb();
-                object dbn = rundb.Open();
-                if (Convert.ToInt16(dbn) == 1)
+                if (StartPollingTrig)
                 {
-                    if (SFcheckSwitch)
+                    FMDMOLib.Rundb rundb = new Rundb();
+                    object dbn = rundb.Open();
+                    if (Convert.ToInt16(dbn) == 1)
                     {
-                        SFcheckTrig.Trig = Convert.ToString(rundb.GetVarValueEx(SFVar["CheckTrig"]));
+                        if (SFcheckSwitch)
+                        {
+                            SFcheckTrig.Trig = Convert.ToString(rundb.GetVarValueEx(SFVar["CheckTrig"]));
+                        }
+                        if (SFlinkSwitch)
+                        {
+                            SFlinkTrig.Trig = Convert.ToString(rundb.GetVarValueEx(SFVar["LinkTrig"]));
+                        }
                     }
-                    if (SFlinkSwitch)
-                    {
-                        SFlinkTrig.Trig = Convert.ToString(rundb.GetVarValueEx(SFVar["LinkTrig"]));
-                    }
+                    rundb.Close();
                 }
-                rundb.Close();
             }, "1", 1000, 1000);
         }
 
@@ -83,12 +113,12 @@ namespace SFDemo
                 if (SFVar["TestResult"] == "PASS")
                 {
                     values = GetVarFromFLEX("LinkSN", "linetype", "Machinenum", "LinkData");
-                    InputStr = TransferToInputStr(new string[] { "SN", "line", "Machinenum", "data" }, values) + "TestResult=PASS";
+                    InputStr = FileUtilHelper.TransferToInputStr(new string[] { "SN", "line", "Machinenum", "data" }, values) + "TestResult=PASS";
                 }
                 else
                 {
                     values = GetVarFromFLEX("LinkSN", "linetype", "Machinenum", "LinkData", "TestResult");
-                    InputStr = TransferToInputStr(new string[] { "SN", "line", "Machinenum", "data", "TestResult" }, values);
+                    InputStr = FileUtilHelper.TransferToInputStr(new string[] { "SN", "line", "Machinenum", "data", "TestResult" }, values);
                 }
                 using (OdbcConnection conn = new OdbcConnection(connectionString))
 
@@ -124,7 +154,9 @@ namespace SFDemo
                     cmd.ExecuteNonQuery();
                     output = (string)parameter5.Value;
                     ReturnMessageToFlexUI(output);
-                    BackgroundProcess(formatOutputStr(DateTime.Now.ToLongTimeString().ToString(), InputStr, "SFReturn:", output));
+
+                    FileUtilHelper.AppendText(SFVar["Path"] + DateTime.Now.ToString("yyyy-MM-dd") + "_" + SFVar["Machine"] + ".txt", "Link:" + DateTime.Now.ToLongTimeString().ToString() + " " + InputStr + " " + output + "\r\n");
+                    BackgroundProcess(FileUtilHelper.formatOutputStr(DateTime.Now.ToLongTimeString().ToString(), InputStr, "SFReturn:", output));
                 }
             }
             catch (Exception ex)
@@ -145,6 +177,7 @@ namespace SFDemo
                 }
             }
             rundb.Close();
+            rundb = null;
         }
 
         private void SFcheck(object sender, PropertyChangedEventArgs e)
@@ -155,7 +188,7 @@ namespace SFDemo
             try
             {
                 string[] values = GetVarFromFLEX("CheckSN", "linetype");
-                string InputStr = TransferToInputStr(new string[] { "SN", "line" }, values);
+                string InputStr = FileUtilHelper.TransferToInputStr(new string[] { "SN", "line" }, values);
 
                 using (OdbcConnection conn = new OdbcConnection(connectionString))
 
@@ -191,7 +224,8 @@ namespace SFDemo
                     cmd.ExecuteNonQuery();
                     output = (string)parameter5.Value;
                     ReturnMessageToFlexUI(output);
-                    BackgroundProcess(formatOutputStr(DateTime.Now.ToLongTimeString().ToString(), InputStr, "SFReturn:" + output));
+                    FileUtilHelper.AppendText(SFVar["Path"] + DateTime.Now.ToString("yyyy-MM-dd") + "_" + SFVar["Machine"] + ".txt", "Check:" + DateTime.Now.ToLongTimeString().ToString() + " " + InputStr + " " + output + "\r\n");
+                    BackgroundProcess(FileUtilHelper.formatOutputStr(DateTime.Now.ToLongTimeString().ToString(), InputStr, "SFReturn:" + output));
                 }
             }
             catch (Exception ex)
@@ -286,29 +320,8 @@ namespace SFDemo
                 }
             }
             rundb.Close();
-
+            rundb = null;
             return (string[])result.ToArray(typeof(string));
-        }
-
-        public string TransferToInputStr(string[] name, string[] values)
-        {
-            string returnStr = string.Empty;
-            for (int x = 0; x < name.Length; x++)
-            {
-                returnStr = returnStr + name[x] + "=" + values[x] + ";$;";
-            }
-            return returnStr;
-        }
-
-        public string formatOutputStr(params string[] values)
-        {
-            string result = values[0];
-            for (int x = 1; x < values.Length; x++)
-            {
-                result = result + ";" + values[x];
-            }
-
-            return result;
         }
     }
 }
