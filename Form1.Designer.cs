@@ -48,9 +48,9 @@ namespace SFDemo
             this.HiveButton = new System.Windows.Forms.Button();
             this.SFButton = new System.Windows.Forms.Button();
             this.HeadPanel = new System.Windows.Forms.Panel();
+            this.FlexUIStatus = new System.Windows.Forms.Label();
             this.currentPaneltext = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.FlexUIStatus = new System.Windows.Forms.Label();
             this.SFPanel.SuspendLayout();
             this.HivePanel.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -108,7 +108,7 @@ namespace SFDemo
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 3;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(105, 401);
             this.tableLayoutPanel1.TabIndex = 3;
@@ -150,6 +150,17 @@ namespace SFDemo
             this.HeadPanel.Size = new System.Drawing.Size(790, 40);
             this.HeadPanel.TabIndex = 4;
             // 
+            // FlexUIStatus
+            // 
+            this.FlexUIStatus.AutoSize = true;
+            this.FlexUIStatus.BackColor = System.Drawing.Color.LimeGreen;
+            this.FlexUIStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.FlexUIStatus.Location = new System.Drawing.Point(709, 7);
+            this.FlexUIStatus.Name = "FlexUIStatus";
+            this.FlexUIStatus.Size = new System.Drawing.Size(73, 25);
+            this.FlexUIStatus.TabIndex = 5;
+            this.FlexUIStatus.Text = "FlexUI";
+            // 
             // currentPaneltext
             // 
             this.currentPaneltext.AutoSize = true;
@@ -172,17 +183,6 @@ namespace SFDemo
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
-            // 
-            // FlexUIStatus
-            // 
-            this.FlexUIStatus.AutoSize = true;
-            this.FlexUIStatus.BackColor = System.Drawing.Color.LimeGreen;
-            this.FlexUIStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.FlexUIStatus.Location = new System.Drawing.Point(709, 7);
-            this.FlexUIStatus.Name = "FlexUIStatus";
-            this.FlexUIStatus.Size = new System.Drawing.Size(73, 25);
-            this.FlexUIStatus.TabIndex = 5;
-            this.FlexUIStatus.Text = "FlexUI";
             // 
             // Form1
             // 

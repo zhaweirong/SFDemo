@@ -10,6 +10,7 @@ using System.Data;
 using System.Data.Odbc;
 using System.Diagnostics;
 using System.Windows.Forms;
+using System.Media;
 
 namespace SFDemo
 {
@@ -29,6 +30,8 @@ namespace SFDemo
         private bool StartPollingTrig = true;
 
         private string connectionString = ConfigurationManager.AppSettings["odbc"].ToString();
+        private string folderPath = ConfigurationManager.AppSettings["Path"].ToString();
+        private int trigPollingtime = int.Parse(ConfigurationManager.AppSettings["TrigPollingTime"].ToString());
 
         public Form1()
 
@@ -40,22 +43,29 @@ namespace SFDemo
             SFButton.BackColor = System.Drawing.Color.LightGray;
             HiveButton.BackColor = System.Drawing.Color.White;
 
-            //ini获取
-            var iniFile = new IniFile("var.ini");
-            SFVar = (Dictionary<string, string>)iniFile.ReadSection("SF");
+            try
+            {
+                //ini获取
+                var iniFile = new IniFile("var.ini");
+                SFVar = (Dictionary<string, string>)iniFile.ReadSection("SF");
 
-            SFcheckSwitch = !String.IsNullOrEmpty(SFVar["CheckTrig"]);
-            SFlinkSwitch = !String.IsNullOrEmpty(SFVar["LinkTrig"]);
+                SFcheckSwitch = !String.IsNullOrEmpty(SFVar["CheckTrig"]);
+                SFlinkSwitch = !String.IsNullOrEmpty(SFVar["LinkTrig"]);
 
-            FileUtilHelper.CreateDirectory(SFVar["Path"]);
+                FileUtilHelper.CreateDirectory(folderPath);
 
-            SFcheckTrig.PropertyChanged += SFcheck;
-            SFlinkTrig.PropertyChanged += SFlink;
+                SFcheckTrig.PropertyChanged += SFcheck;
+                SFlinkTrig.PropertyChanged += SFlink;
 
-            //Check FlexUI OPEN
-            CheckFlexUIProcess();
-            //Get SFTrig from flexUI
-            PollingTrig();
+                //Check FlexUI OPEN
+                CheckFlexUIProcess();
+                //Get SFTrig from flexUI
+                PollingTrig();
+            }
+            catch (Exception ex)
+            {
+                ex.ToString().LogForError();
+            }
         }
 
         private void CheckFlexUIProcess()
@@ -98,7 +108,7 @@ namespace SFDemo
                     }
                     rundb.Close();
                 }
-            }, "1", 1000, 1000);
+            }, "1", 1000, trigPollingtime);
         }
 
         private void SFlink(object sender, PropertyChangedEventArgs e)
@@ -155,7 +165,16 @@ namespace SFDemo
                     output = (string)parameter5.Value;
                     ReturnMessageToFlexUI(output);
 
-                    FileUtilHelper.AppendText(SFVar["Path"] + DateTime.Now.ToString("yyyy-MM-dd") + "_" + SFVar["Machine"] + ".txt", "Link:" + DateTime.Now.ToLongTimeString().ToString() + " " + InputStr + " " + output + "\r\n");
+                    if (string.Equals(output.Substring(11, 4), "PASS"))
+                    {
+                        new SoundPlayer(ConfigurationManager.AppSettings["LinkOK"].ToString()).Play();
+                    }
+                    else
+                    {
+                        new SoundPlayer(ConfigurationManager.AppSettings["LinkNG"].ToString()).Play();
+                    }
+
+                    FileUtilHelper.AppendText(folderPath + DateTime.Now.ToString("yyyy-MM-dd") + "_" + SFVar["Machine"] + ".txt", "Link:" + DateTime.Now.ToLongTimeString().ToString() + " " + InputStr + " " + output + "\r\n");
                     BackgroundProcess(FileUtilHelper.formatOutputStr(DateTime.Now.ToLongTimeString().ToString(), InputStr, "SFReturn:", output));
                 }
             }
@@ -163,21 +182,6 @@ namespace SFDemo
             {
                 ex.ToString().LogForError();
             }
-        }
-
-        private void ReturnMessageToFlexUI(string value)
-        {
-            FMDMOLib.Rundb rundb = new Rundb();
-            object dbn = rundb.Open();
-            if (Convert.ToInt16(dbn) == 1)
-            {
-                if (!string.IsNullOrEmpty(SFVar["ReturnSFMessage"]))
-                {
-                    rundb.SetVarValueEx(SFVar["ReturnSFMessage"], value);
-                }
-            }
-            rundb.Close();
-            rundb = null;
         }
 
         private void SFcheck(object sender, PropertyChangedEventArgs e)
@@ -224,7 +228,17 @@ namespace SFDemo
                     cmd.ExecuteNonQuery();
                     output = (string)parameter5.Value;
                     ReturnMessageToFlexUI(output);
-                    FileUtilHelper.AppendText(SFVar["Path"] + DateTime.Now.ToString("yyyy-MM-dd") + "_" + SFVar["Machine"] + ".txt", "Check:" + DateTime.Now.ToLongTimeString().ToString() + " " + InputStr + " " + output + "\r\n");
+
+                    if (string.Equals(output.Substring(11, 4), "PASS") | output.IndexOf("Check SN time OverTime") > 0)
+                    {
+                        new SoundPlayer(ConfigurationManager.AppSettings["CheckOK"].ToString()).Play();
+                    }
+                    else
+                    {
+                        new SoundPlayer(ConfigurationManager.AppSettings["CheckNG"].ToString()).Play();
+                    }
+
+                    FileUtilHelper.AppendText(folderPath + DateTime.Now.ToString("yyyy-MM-dd") + "_" + SFVar["Machine"] + ".txt", "Check:" + DateTime.Now.ToLongTimeString().ToString() + " " + InputStr + " " + output + "\r\n");
                     BackgroundProcess(FileUtilHelper.formatOutputStr(DateTime.Now.ToLongTimeString().ToString(), InputStr, "SFReturn:" + output));
                 }
             }
@@ -247,6 +261,21 @@ namespace SFDemo
                 SFlistBox.Items.Add(outputstr);
             };
             SFlistBox.Invoke(CrossAdd);
+        }
+
+        private void ReturnMessageToFlexUI(string value)
+        {
+            FMDMOLib.Rundb rundb = new Rundb();
+            object dbn = rundb.Open();
+            if (Convert.ToInt16(dbn) == 1)
+            {
+                if (!string.IsNullOrEmpty(SFVar["ReturnSFMessage"]))
+                {
+                    rundb.SetVarValueEx(SFVar["ReturnSFMessage"], value);
+                }
+            }
+            rundb.Close();
+            rundb = null;
         }
 
         //界面切换
