@@ -622,6 +622,17 @@ namespace SFDemo
             return result;
         }
 
+        public static string GetLogString(params string[] values)
+        {
+            string result = values[0] + ":";
+            for (int x = 1; x < values.Length; x++)
+            {
+                result = result + values[x] + ";";
+            }
+
+            return result;
+        }
+
         #endregion 自定义文本格式转换
     }
 }

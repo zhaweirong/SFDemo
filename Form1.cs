@@ -11,6 +11,7 @@ using System.Data.Odbc;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Media;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SFDemo
 {
@@ -23,9 +24,11 @@ namespace SFDemo
 
         private bool SFcheckSwitch = true;
         private bool SFlinkSwitch = true;
+        private bool SFcheck2Switch = true;
 
         private TrigVar SFcheckTrig = new TrigVar();
         private TrigVar SFlinkTrig = new TrigVar();
+        private TrigVar SFcheck2Trig = new TrigVar();
 
         private bool StartPollingTrig = true;
 
@@ -52,11 +55,14 @@ namespace SFDemo
                 SFcheckSwitch = !String.IsNullOrEmpty(SFVar["CheckTrig"]);
                 SFlinkSwitch = !String.IsNullOrEmpty(SFVar["LinkTrig"]);
 
+                SFcheck2Switch = !String.IsNullOrEmpty(SFVar["Check2Trig"]);
+
                 FileUtilHelper.CreateDirectory(folderPath);
 
                 SFcheckTrig.PropertyChanged += SFcheck;
                 SFlinkTrig.PropertyChanged += SFlink;
 
+                SFcheck2Trig.PropertyChanged += SFcheck2;
                 //Check FlexUI OPEN
                 CheckFlexUIProcess();
                 //Get SFTrig from flexUI
@@ -65,6 +71,7 @@ namespace SFDemo
             catch (Exception ex)
             {
                 ex.ToString().LogForError();
+                throw new Exception("配置文件读取异常");
             }
         }
 
@@ -101,6 +108,10 @@ namespace SFDemo
                         {
                             SFcheckTrig.Trig = Convert.ToString(rundb.GetVarValueEx(SFVar["CheckTrig"]));
                         }
+                        if (SFcheck2Switch)
+                        {
+                            SFcheck2Trig.Trig = Convert.ToString(rundb.GetVarValueEx(SFVar["Check2Trig"]));
+                        }
                         if (SFlinkSwitch)
                         {
                             SFlinkTrig.Trig = Convert.ToString(rundb.GetVarValueEx(SFVar["LinkTrig"]));
@@ -113,7 +124,7 @@ namespace SFDemo
 
         private void SFlink(object sender, PropertyChangedEventArgs e)
         {
-            if (string.IsNullOrEmpty(SFcheckTrig.Trig)) { return; }
+            if (string.IsNullOrEmpty(SFlinkTrig.Trig)) { return; }
 
             string output = string.Empty;
             string InputStr = string.Empty;
@@ -122,18 +133,18 @@ namespace SFDemo
             {
                 if (SFVar["TestResult"] == "PASS")
                 {
-                    values = GetVarFromFLEX("LinkSN", "linetype", "Machinenum", "LinkData");
+                    values = GetVarFromFLEX("LinkSN", "LineType", "Machinenum", "LinkData");
                     InputStr = FileUtilHelper.TransferToInputStr(new string[] { "SN", "line", "Machinenum", "data" }, values) + "TestResult=PASS";
                 }
                 else
                 {
-                    values = GetVarFromFLEX("LinkSN", "linetype", "Machinenum", "LinkData", "TestResult");
+                    values = GetVarFromFLEX("LinkSN", "LineType", "Machinenum", "LinkData", "TestResult");
                     InputStr = FileUtilHelper.TransferToInputStr(new string[] { "SN", "line", "Machinenum", "data", "TestResult" }, values);
                 }
                 using (OdbcConnection conn = new OdbcConnection(connectionString))
 
                 {
-                    OdbcCommand cmd = new OdbcCommand("{  call MonitorPortaltest (?,?,?,?,?)}", conn);
+                    OdbcCommand cmd = new OdbcCommand("{  call MonitorPortal (?,?,?,?,?)}", conn);
 
                     conn.Open();
 
@@ -174,13 +185,17 @@ namespace SFDemo
                         new SoundPlayer(ConfigurationManager.AppSettings["LinkNG"].ToString()).Play();
                     }
 
-                    FileUtilHelper.AppendText(folderPath + DateTime.Now.ToString("yyyy-MM-dd") + "_" + SFVar["Machine"] + ".txt", "Link:" + DateTime.Now.ToLongTimeString().ToString() + " " + InputStr + " " + output + "\r\n");
-                    BackgroundProcess(FileUtilHelper.formatOutputStr(DateTime.Now.ToLongTimeString().ToString(), InputStr, "SFReturn:", output));
+                    string floder = folderPath + DateTime.Now.ToString("yyyy-MM-dd") + "_" + SFVar["Machine"] + ".txt";
+                    string logstr = FileUtilHelper.GetLogString("Link", DateTime.Now.ToLongTimeString().ToString(), " Trig:" + e.PropertyName, InputStr, "SFreturn:" + output + "\r\n");
+
+                    FileUtilHelper.AppendText(floder, logstr);
+                    BackgroundProcess(logstr);
                 }
             }
             catch (Exception ex)
             {
                 ex.ToString().LogForError();
+                BackgroundProcess(ex.ToString());
             }
         }
 
@@ -191,13 +206,13 @@ namespace SFDemo
             string output = string.Empty;
             try
             {
-                string[] values = GetVarFromFLEX("CheckSN", "linetype");
+                string[] values = GetVarFromFLEX("CheckSN", "LineType");
                 string InputStr = FileUtilHelper.TransferToInputStr(new string[] { "SN", "line" }, values);
 
                 using (OdbcConnection conn = new OdbcConnection(connectionString))
 
                 {
-                    OdbcCommand cmd = new OdbcCommand("{ call MonitorPortaltest (?,?,?,?,?)}", conn);
+                    OdbcCommand cmd = new OdbcCommand("{ call MonitorPortal (?,?,?,?,?)}", conn);
 
                     conn.Open();
 
@@ -238,13 +253,84 @@ namespace SFDemo
                         new SoundPlayer(ConfigurationManager.AppSettings["CheckNG"].ToString()).Play();
                     }
 
-                    FileUtilHelper.AppendText(folderPath + DateTime.Now.ToString("yyyy-MM-dd") + "_" + SFVar["Machine"] + ".txt", "Check:" + DateTime.Now.ToLongTimeString().ToString() + " " + InputStr + " " + output + "\r\n");
-                    BackgroundProcess(FileUtilHelper.formatOutputStr(DateTime.Now.ToLongTimeString().ToString(), InputStr, "SFReturn:" + output));
+                    string floder = folderPath + DateTime.Now.ToString("yyyy-MM-dd") + "_" + SFVar["Machine"] + ".txt";
+                    string logstr = FileUtilHelper.GetLogString("Check", DateTime.Now.ToLongTimeString().ToString(), " Trig:" + e.PropertyName, InputStr, "SFreturn:" + output + "\r\n");
+
+                    FileUtilHelper.AppendText(floder, logstr);
+                    BackgroundProcess(logstr);
                 }
             }
             catch (Exception ex)
             {
                 ex.ToString().LogForError();
+                BackgroundProcess(ex.ToString());
+            }
+        }
+
+        private void SFcheck2(object sender, PropertyChangedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(SFcheck2Trig.Trig)) { return; }
+
+            string output = string.Empty;
+            try
+            {
+                string[] values = GetVarFromFLEX("Check2SN", "LineType");
+                string InputStr = FileUtilHelper.TransferToInputStr(new string[] { "SN", "line" }, values);
+
+                using (OdbcConnection conn = new OdbcConnection(connectionString))
+
+                {
+                    OdbcCommand cmd = new OdbcCommand("{ call MonitorPortal (?,?,?,?,?)}", conn);
+
+                    conn.Open();
+
+                    OdbcParameter parameter1 = new OdbcParameter("@BU", OdbcType.Char);
+                    parameter1.Direction = ParameterDirection.Input;
+                    parameter1.Value = "NB6";
+                    cmd.Parameters.Add(parameter1);
+
+                    OdbcParameter parameter2 = new OdbcParameter("@Station", OdbcType.Char);
+                    parameter2.Direction = ParameterDirection.Input;
+                    parameter2.Value = "RHM";
+                    cmd.Parameters.Add(parameter2);
+
+                    OdbcParameter parameter3 = new OdbcParameter("@Step", OdbcType.Char);
+                    parameter3.Direction = ParameterDirection.Input;
+                    parameter3.Value = "Require";
+                    cmd.Parameters.Add(parameter3);
+
+                    OdbcParameter parameter4 = new OdbcParameter("@InputStr", OdbcType.Char);
+                    parameter4.Direction = ParameterDirection.Input;
+                    parameter4.Value = InputStr;
+                    cmd.Parameters.Add(parameter4);
+
+                    OdbcParameter parameter5 = new OdbcParameter("@Output", OdbcType.VarChar, 256);
+                    parameter5.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(parameter5);
+
+                    cmd.ExecuteNonQuery();
+                    output = (string)parameter5.Value;
+                    ReturnMessageToFlexUI(output);
+
+                    if (string.Equals(output.Substring(11, 4), "PASS") | output.IndexOf("Check SN time OverTime") > 0)
+                    {
+                        new SoundPlayer(ConfigurationManager.AppSettings["CheckOK"].ToString()).Play();
+                    }
+                    else
+                    {
+                        new SoundPlayer(ConfigurationManager.AppSettings["CheckNG"].ToString()).Play();
+                    }
+                    string floder = folderPath + DateTime.Now.ToString("yyyy-MM-dd") + "_" + SFVar["Machine"] + ".txt";
+                    string logstr = FileUtilHelper.GetLogString("Check2", DateTime.Now.ToLongTimeString().ToString(), " Trig:" + e.PropertyName, InputStr, "SFreturn:" + output + "\r\n");
+
+                    FileUtilHelper.AppendText(floder, logstr);
+                    BackgroundProcess(logstr);
+                }
+            }
+            catch (Exception ex)
+            {
+                ex.ToString().LogForError();
+                BackgroundProcess(ex.ToString());
             }
         }
 
@@ -317,15 +403,31 @@ namespace SFDemo
                         {
                             string[] sArray = SFVar[values[x]].Split('/');
                             string data = string.Empty;
+                            string[] teampArray;
                             foreach (string i in sArray)
                             {
+                                teampArray = i.Split(':');
                                 if (string.IsNullOrEmpty(data))
                                 {
-                                    data = Convert.ToString(rundb.GetVarValueEx(i));
+                                    if (teampArray.Length > 1)
+                                    {
+                                        data = teampArray[0] + ":" + Convert.ToString(rundb.GetVarValueEx(teampArray[1]));
+                                    }
+                                    else
+                                    {
+                                        data = Convert.ToString(rundb.GetVarValueEx(i));
+                                    }
                                 }
                                 else
                                 {
-                                    data = data + "\\" + Convert.ToString(rundb.GetVarValueEx(i));
+                                    if (teampArray.Length > 1)
+                                    {
+                                        data = data + "\\" + teampArray[0] + ":" + Convert.ToString(rundb.GetVarValueEx(teampArray[1]));
+                                    }
+                                    else
+                                    {
+                                        data = data + "\\" + Convert.ToString(rundb.GetVarValueEx(i));
+                                    }
                                 }
                             }
                             result.Add(data);
