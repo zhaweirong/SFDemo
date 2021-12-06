@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -609,17 +610,6 @@ namespace SFDemo
                 returnStr = returnStr + name[x] + "=" + values[x] + ";$;";
             }
             return returnStr;
-        }
-
-        public static string formatOutputStr(params string[] values)
-        {
-            string result = values[0];
-            for (int x = 1; x < values.Length; x++)
-            {
-                result = result + ";" + values[x];
-            }
-
-            return result;
         }
 
         public static string GetLogString(params string[] values)

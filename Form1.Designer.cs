@@ -20,16 +20,6 @@ namespace SFDemo
             }
             base.Dispose(disposing);
         }
-        protected override void WndProc(ref System.Windows.Forms.Message m)
-        {
-            const int WM_SYSCOMMAND = 0x0112;
-            const int SC_CLOSE = 0xF060;
-            if (m.Msg == WM_SYSCOMMAND && (int)m.WParam == SC_CLOSE)
-            {
-                return;
-            }
-            base.WndProc(ref m);
-        }
 
         #region Windows 窗体设计器生成的代码
 
@@ -48,6 +38,7 @@ namespace SFDemo
             this.HiveButton = new System.Windows.Forms.Button();
             this.SFButton = new System.Windows.Forms.Button();
             this.HeadPanel = new System.Windows.Forms.Panel();
+            this.SFswitchbutton = new System.Windows.Forms.Button();
             this.FlexUIStatus = new System.Windows.Forms.Label();
             this.currentPaneltext = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -142,6 +133,7 @@ namespace SFDemo
             // HeadPanel
             // 
             this.HeadPanel.BackColor = System.Drawing.Color.White;
+            this.HeadPanel.Controls.Add(this.SFswitchbutton);
             this.HeadPanel.Controls.Add(this.FlexUIStatus);
             this.HeadPanel.Controls.Add(this.currentPaneltext);
             this.HeadPanel.Controls.Add(this.pictureBox1);
@@ -149,6 +141,21 @@ namespace SFDemo
             this.HeadPanel.Name = "HeadPanel";
             this.HeadPanel.Size = new System.Drawing.Size(790, 40);
             this.HeadPanel.TabIndex = 4;
+            // 
+            // SFswitchbutton
+            // 
+            this.SFswitchbutton.AutoSize = true;
+            this.SFswitchbutton.BackColor = System.Drawing.Color.LimeGreen;
+            this.SFswitchbutton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.SFswitchbutton.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F);
+            this.SFswitchbutton.Location = new System.Drawing.Point(606, 2);
+            this.SFswitchbutton.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.SFswitchbutton.Name = "SFswitchbutton";
+            this.SFswitchbutton.Size = new System.Drawing.Size(92, 35);
+            this.SFswitchbutton.TabIndex = 5;
+            this.SFswitchbutton.Text = "SF ON ";
+            this.SFswitchbutton.UseVisualStyleBackColor = false;
+            this.SFswitchbutton.Click += new System.EventHandler(this.SFswitchbutton_Click);
             // 
             // FlexUIStatus
             // 
@@ -158,8 +165,9 @@ namespace SFDemo
             this.FlexUIStatus.Location = new System.Drawing.Point(709, 7);
             this.FlexUIStatus.Name = "FlexUIStatus";
             this.FlexUIStatus.Size = new System.Drawing.Size(73, 25);
-            this.FlexUIStatus.TabIndex = 5;
+            this.FlexUIStatus.TabIndex = 6;
             this.FlexUIStatus.Text = "FlexUI";
+            this.FlexUIStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // currentPaneltext
             // 
@@ -196,6 +204,7 @@ namespace SFDemo
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Form1";
             this.Text = "ABB_SF";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.SFPanel.ResumeLayout(false);
             this.HivePanel.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
@@ -219,6 +228,7 @@ namespace SFDemo
         private System.Windows.Forms.ListBox HivelistBox;
         private System.Windows.Forms.Label currentPaneltext;
         private System.Windows.Forms.Label FlexUIStatus;
+        private System.Windows.Forms.Button SFswitchbutton;
     }
 }
 
