@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -601,16 +600,6 @@ namespace SFDemo
         #endregion 去除文件名中的特殊字符
 
         #region 自定义文本格式转换
-
-        public static string TransferToInputStr(string[] name, string[] values)
-        {
-            string returnStr = string.Empty;
-            for (int x = 0; x < name.Length; x++)
-            {
-                returnStr = returnStr + name[x] + "=" + values[x] + ";$;";
-            }
-            return returnStr;
-        }
 
         public static string GetLogString(params string[] values)
         {

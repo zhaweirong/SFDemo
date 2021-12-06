@@ -86,8 +86,14 @@
     <Compile Include="Form2.Designer.cs">
       <DependentUpon>Form2.cs</DependentUpon>
     </Compile>
+    <Compile Include="ODBC\Command.cs" />
+    <Compile Include="ODBC\Connection.cs" />
+    <Compile Include="ODBC\CurrentContext.cs" />
+    <Compile Include="ODBC\ProcedureExecuter.cs" />
+    <Compile Include="ODBC\ResultReader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Retry.cs" />
     <Compile Include="SoundHelper.cs" />
     <Compile Include="TrigVar.cs" />
     <EmbeddedResource Include="Form1.resx">

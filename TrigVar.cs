@@ -39,8 +39,8 @@ namespace SFDemo
                     }
                     else if (int.Parse(value) > int.Parse(this._Trig))
                     {
-                        PropChanged(value);
                         this._Trig = value;
+                        PropChanged(value);
                     }
                     else
                     {

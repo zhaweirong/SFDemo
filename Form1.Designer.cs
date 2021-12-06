@@ -115,6 +115,7 @@ namespace SFDemo
             this.HiveButton.TabIndex = 1;
             this.HiveButton.Text = "Hive";
             this.HiveButton.UseVisualStyleBackColor = false;
+            this.HiveButton.Visible = false;
             this.HiveButton.Click += new System.EventHandler(this.HiveButton_Click);
             // 
             // SFButton
@@ -151,7 +152,7 @@ namespace SFDemo
             this.SFswitchbutton.Location = new System.Drawing.Point(606, 2);
             this.SFswitchbutton.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.SFswitchbutton.Name = "SFswitchbutton";
-            this.SFswitchbutton.Size = new System.Drawing.Size(92, 35);
+            this.SFswitchbutton.Size = new System.Drawing.Size(92, 38);
             this.SFswitchbutton.TabIndex = 5;
             this.SFswitchbutton.Text = "SF ON ";
             this.SFswitchbutton.UseVisualStyleBackColor = false;
@@ -159,12 +160,11 @@ namespace SFDemo
             // 
             // FlexUIStatus
             // 
-            this.FlexUIStatus.AutoSize = true;
             this.FlexUIStatus.BackColor = System.Drawing.Color.LimeGreen;
             this.FlexUIStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.FlexUIStatus.Location = new System.Drawing.Point(709, 7);
+            this.FlexUIStatus.Location = new System.Drawing.Point(704, 4);
             this.FlexUIStatus.Name = "FlexUIStatus";
-            this.FlexUIStatus.Size = new System.Drawing.Size(73, 25);
+            this.FlexUIStatus.Size = new System.Drawing.Size(83, 33);
             this.FlexUIStatus.TabIndex = 6;
             this.FlexUIStatus.Text = "FlexUI";
             this.FlexUIStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;

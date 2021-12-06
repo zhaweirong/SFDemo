@@ -48,5 +48,10 @@ namespace SFDemo
         {
             this.PassError.Text = "";
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            this.textBox1.Text = this.textBox1.Text + sender.ToString().Substring(sender.ToString().Length - 1, 1);
+        }
     }
 }

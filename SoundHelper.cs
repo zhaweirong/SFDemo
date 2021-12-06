@@ -13,14 +13,13 @@ namespace SFDemo
     {
         public static void PlaySound(string soundname)
         {
-            //如果目录不存在，则抛出异常
             try
             {
                 new SoundPlayer(ConfigurationManager.AppSettings[soundname].ToString()).Play();
             }
             catch (Exception ex)
             {
-                ex.ToString().LogForError();
+                //ex.ToString().LogForError();
             }
         }
     }

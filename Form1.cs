@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
-using System.Data;
-using System.Data.Odbc;
 using System.Diagnostics;
 using System.Windows.Forms;
 
@@ -30,14 +28,14 @@ namespace SFDemo
 
         private bool StartPollingTrig = true;
 
-        private string connectionString = ConfigurationManager.AppSettings["odbc"].ToString();
-        private string connectionString2 = ConfigurationManager.AppSettings["odbc2"].ToString();
-        private string folderPath = ConfigurationManager.AppSettings["Path"].ToString();
-        private int trigPollingtime = int.Parse(ConfigurationManager.AppSettings["TrigPollingTime"].ToString());
+        private string folderPath = GetAppsettingStr("Path");
+        private int trigPollingtime = int.Parse(GetAppsettingStr("TrigPollingTime"));
+        private string CHECK1ProcedureName = GetAppsettingStr("CHECK1ProcedureName");
+        private string CHECK2ProcedureName = GetAppsettingStr("CHECK2ProcedureName");
+        private string LINKProcedureName = GetAppsettingStr("LINKProcedureName");
 
-        private string CHECK1ProcedureName = ConfigurationManager.AppSettings["CHECK1ProcedureName"].ToString();
-        private string CHECK2ProcedureName = ConfigurationManager.AppSettings["CHECK2ProcedureName"].ToString();
-        private string LINKProcedureName = ConfigurationManager.AppSettings["LINKProcedureName"].ToString();
+        private int RetryCount = int.Parse(GetAppsettingStr("RetryCount"));
+        private double RetryInterval = (double.Parse(GetAppsettingStr("RetryInterval"))) / 1000;
 
         public delegate void DCloseWindow(string pwd);
 
@@ -148,75 +146,48 @@ namespace SFDemo
 
             string output = string.Empty;
             string InputStr = string.Empty;
+            int retrytime = 0;
             try
             {
                 InputStr = GetVarFromFLEX("CheckInputStr");
 
-                using (OdbcConnection conn = new OdbcConnection(connectionString))
-
+                Retry.RetryHandle(RetryCount, TimeSpan.FromSeconds(RetryInterval), false, delegate
                 {
-                    OdbcCommand cmd = new OdbcCommand("{ call " + CHECK1ProcedureName + " (?,?,?,?,?)}", conn);
+                    output = ProcedureExecuter.ExecuteNonQuery(CHECK1ProcedureName, SFVar["BU"], SFVar["Station"], "Request", InputStr);
 
-                    conn.Open();
-
-                    OdbcParameter parameter1 = new OdbcParameter("@BU", OdbcType.Char);
-                    parameter1.Direction = ParameterDirection.Input;
-                    parameter1.Value = SFVar["BU"];
-                    cmd.Parameters.Add(parameter1);
-
-                    OdbcParameter parameter2 = new OdbcParameter("@Station", OdbcType.Char);
-                    parameter2.Direction = ParameterDirection.Input;
-                    parameter2.Value = SFVar["Station"];
-                    cmd.Parameters.Add(parameter2);
-
-                    OdbcParameter parameter3 = new OdbcParameter("@Step", OdbcType.Char);
-                    parameter3.Direction = ParameterDirection.Input;
-                    parameter3.Value = "Request";
-                    cmd.Parameters.Add(parameter3);
-
-                    OdbcParameter parameter4 = new OdbcParameter("@InputStr", OdbcType.Char);
-                    parameter4.Direction = ParameterDirection.Input;
-                    parameter4.Value = InputStr;
-                    cmd.Parameters.Add(parameter4);
-
-                    OdbcParameter parameter5 = new OdbcParameter("@Output", OdbcType.VarChar, 256);
-                    parameter5.Direction = ParameterDirection.Output;
-                    cmd.Parameters.Add(parameter5);
-
-                    cmd.ExecuteNonQuery();
-                    output = (string)parameter5.Value;
-
-                    if (string.Equals(output.Substring(11, 4), "PASS", StringComparison.OrdinalIgnoreCase))
+                    if ((output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0) && (output.IndexOf("FAIL", StringComparison.OrdinalIgnoreCase) <= 0))
                     {
-                        if (SFVar["Machine"].Equals("DHA"))
-                        {
-                            DHACheckReturn(output, "OK");
-                        }
-                        else
-                        {
-                            ReturnMessageToFlexUI(output, "OK");
-                        }
-                        SoundHelper.PlaySound("CheckOK");
+                        retrytime++;
+                        throw new Exception("SFCheckReturnErrorMsg");
+                    }
+                });
+
+                if (string.Equals(output.Substring(11, 4), "PASS", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (SFVar["Machine"].Equals("DHA"))
+                    {
+                        DHACheckReturn(output, "OK");
                     }
                     else
                     {
-                        if (SFVar["Machine"].Equals("DHA"))
-                        {
-                            DHACheckReturn(output, "NG");
-                        }
-                        else
-                        {
-                            ReturnMessageToFlexUI(output, "NG");
-                        }
-                        SoundHelper.PlaySound("CheckNG");
+                        ReturnMessageToFlexUI(output, "OK");
                     }
-
-                    string floder = folderPath + DateTime.Now.ToString("yyyy-MM-dd") + "_" + SFVar["Machine"] + ".txt";
-                    string logstr = FileUtilHelper.GetLogString("Check", DateTime.Now.ToLongTimeString().ToString(), " Trig:" + e.PropertyName, InputStr + "SFreturn:" + output + "\r\n");
-
-                    FileUtilHelper.AppendText(floder, logstr);
-                    BackgroundProcess(logstr);
+                    SoundHelper.PlaySound("CheckOK");
                 }
+                else
+                {
+                    if (SFVar["Machine"].Equals("DHA"))
+                    {
+                        DHACheckReturn(output, "NG");
+                    }
+                    else
+                    {
+                        ReturnMessageToFlexUI(output, "NG");
+                    }
+                    SoundHelper.PlaySound("CheckNG");
+                }
+
+                WriteSFLog("Check", e.PropertyName, InputStr, output, retrytime);
             }
             catch (Exception ex)
             {
@@ -231,66 +202,45 @@ namespace SFDemo
 
             string output = string.Empty;
             string InputStr = string.Empty;
+            int retrytime = 0;
             try
             {
                 InputStr = GetVarFromFLEX("CheckInputStr");
-
-                using (OdbcConnection conn = new OdbcConnection(connectionString2))
-
+                Retry.RetryHandle(RetryCount, TimeSpan.FromSeconds(RetryInterval), true, delegate
                 {
-                    OdbcCommand cmd = new OdbcCommand("{ call " + CHECK2ProcedureName + " (?,?,?,?,?)}", conn);
-
-                    conn.Open();
-
-                    OdbcParameter parameter1 = new OdbcParameter("@BU", OdbcType.Char);
-                    parameter1.Direction = ParameterDirection.Input;
-                    parameter1.Value = SFVar["BU2"];
-                    cmd.Parameters.Add(parameter1);
-
-                    OdbcParameter parameter2 = new OdbcParameter("@Station", OdbcType.Char);
-                    parameter2.Direction = ParameterDirection.Input;
-                    parameter2.Value = SFVar["Station2"];
-                    cmd.Parameters.Add(parameter2);
-
-                    OdbcParameter parameter3 = new OdbcParameter("@Step", OdbcType.Char);
-                    parameter3.Direction = ParameterDirection.Input;
-                    parameter3.Value = "Request";
-                    cmd.Parameters.Add(parameter3);
-
-                    OdbcParameter parameter4 = new OdbcParameter("@InputStr", OdbcType.Char);
-                    parameter4.Direction = ParameterDirection.Input;
-                    parameter4.Value = InputStr;
-                    cmd.Parameters.Add(parameter4);
-
-                    OdbcParameter parameter5 = new OdbcParameter("@Output", OdbcType.VarChar, 256);
-                    parameter5.Direction = ParameterDirection.Output;
-                    cmd.Parameters.Add(parameter5);
-
-                    cmd.ExecuteNonQuery();
-                    output = (string)parameter5.Value;
-
-                    if (string.Equals(output.Substring(11, 4), "PASS", StringComparison.OrdinalIgnoreCase))
+                    output = ProcedureExecuter.ExecuteNonQuery(CHECK2ProcedureName, SFVar["BU2"], SFVar["Station2"], "Request", InputStr);
+                    if (output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0 && output.IndexOf("FAIL", StringComparison.OrdinalIgnoreCase) <= 0)
                     {
-                        if (SFVar["Machine"].Equals("DHA"))
-                        {
-                            DHACheck2Return(output, "OK");
-                        }
-                        SoundHelper.PlaySound("Check2OK");
+                        retrytime++;
+                        throw new Exception("SFCheck2ReturnErrorMsg");
+                    }
+                });
+
+                if (string.Equals(output.Substring(11, 4), "PASS", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (SFVar["Machine"].Equals("DHA"))
+                    {
+                        DHACheck2Return(output, "OK");
                     }
                     else
                     {
-                        if (SFVar["Machine"].Equals("DHA"))
-                        {
-                            DHACheck2Return(output, "NG");
-                        }
-                        SoundHelper.PlaySound("Check2NG");
+                        ReturnMessage2ToFlexUI(output, "OK");
                     }
-                    string floder = folderPath + DateTime.Now.ToString("yyyy-MM-dd") + "_" + SFVar["Machine"] + ".txt";
-                    string logstr = FileUtilHelper.GetLogString("Check2", DateTime.Now.ToLongTimeString().ToString(), " Trig:" + e.PropertyName, InputStr + "SFreturn:" + output + "\r\n");
-
-                    FileUtilHelper.AppendText(floder, logstr);
-                    BackgroundProcess(logstr);
+                    SoundHelper.PlaySound("Check2OK");
                 }
+                else
+                {
+                    if (SFVar["Machine"].Equals("DHA"))
+                    {
+                        DHACheck2Return(output, "NG");
+                    }
+                    else
+                    {
+                        ReturnMessage2ToFlexUI(output, "NG");
+                    }
+                    SoundHelper.PlaySound("Check2NG");
+                }
+                WriteSFLog("Check2", e.PropertyName, InputStr, output, retrytime);
             }
             catch (Exception ex)
             {
@@ -305,64 +255,36 @@ namespace SFDemo
 
             string output = string.Empty;
             string InputStr = string.Empty;
+            int retrytime = 0;
             try
             {
                 InputStr = GetVarFromFLEX("LinkInputStr", "LinkData", "TestResult");
-
-                using (OdbcConnection conn = new OdbcConnection(connectionString))
-
+                Retry.RetryHandle(RetryCount, TimeSpan.FromSeconds(RetryInterval), true, delegate
                 {
-                    OdbcCommand cmd = new OdbcCommand("{  call " + LINKProcedureName + " (?,?,?,?,?)}", conn);
-
-                    conn.Open();
-
-                    OdbcParameter parameter1 = new OdbcParameter("@BU", OdbcType.Char);
-                    parameter1.Direction = ParameterDirection.Input;
-                    parameter1.Value = SFVar["BU"];
-                    cmd.Parameters.Add(parameter1);
-
-                    OdbcParameter parameter2 = new OdbcParameter("@Station", OdbcType.Char);
-                    parameter2.Direction = ParameterDirection.Input;
-                    parameter2.Value = SFVar["Station"];
-                    cmd.Parameters.Add(parameter2);
-
-                    OdbcParameter parameter3 = new OdbcParameter("@Step", OdbcType.Char);
-                    parameter3.Direction = ParameterDirection.Input;
-                    parameter3.Value = "Require";
-                    cmd.Parameters.Add(parameter3);
-
-                    OdbcParameter parameter4 = new OdbcParameter("@InputStr", OdbcType.Char);
-                    parameter4.Direction = ParameterDirection.Input;
-                    parameter4.Value = InputStr;
-                    cmd.Parameters.Add(parameter4);
-
-                    OdbcParameter parameter5 = new OdbcParameter("@Output", OdbcType.VarChar, 256);
-                    parameter5.Direction = ParameterDirection.Output;
-                    cmd.Parameters.Add(parameter5);
-
-                    cmd.ExecuteNonQuery();
-                    output = (string)parameter5.Value;
-                    ReturnMessageToFlexUI(output);
-
-                    if (string.Equals(output.Substring(11, 4), "PASS", StringComparison.OrdinalIgnoreCase))
+                    output = ProcedureExecuter.ExecuteNonQuery(LINKProcedureName, SFVar["BU"], SFVar["Station"], "Require", InputStr);
+                    if (output == "")
                     {
-                        if (SFVar["Machine"].Equals("DHA"))
-                        {
-                            DHALinkReturn();
-                        }
-                        SoundHelper.PlaySound("LinkOK");
+                        retrytime++;
+                        throw new Exception("SFLinkReturnErrorMsg");
                     }
-                    else
+                });
+
+                ReturnMessageToFlexUI(output);
+
+                if (string.Equals(output.Substring(11, 4), "PASS", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (SFVar["Machine"].Equals("DHA"))
                     {
-                        SoundHelper.PlaySound("LinkNG");
+                        DHALinkReturn();
                     }
-
-                    string floder = folderPath + DateTime.Now.ToString("yyyy-MM-dd") + "_" + SFVar["Machine"] + ".txt";
-                    string logstr = FileUtilHelper.GetLogString("Link", DateTime.Now.ToLongTimeString().ToString(), " Trig:" + e.PropertyName, InputStr + "SFreturn:" + output + "\r\n");
-
-                    FileUtilHelper.AppendText(floder, logstr);
-                    BackgroundProcess(logstr);
+                    SoundHelper.PlaySound("LinkOK");
                 }
+                else
+                {
+                    SoundHelper.PlaySound("LinkNG");
+                }
+
+                WriteSFLog("Link", e.PropertyName, InputStr, output, retrytime);
             }
             catch (Exception ex)
             {
@@ -480,6 +402,36 @@ namespace SFDemo
             rundb = null;
         }
 
+        private void ReturnMessage2ToFlexUI(string value, string SFresult)
+        {
+            FMDMOLib.Rundb rundb = new Rundb();
+            object dbn = rundb.Open();
+            if (Convert.ToInt16(dbn) == 1)
+            {
+                if (!string.IsNullOrEmpty(SFVar["ReturnSFMessage"]))
+                {
+                    rundb.SetVarValueEx(SFVar["ReturnSFMessage"], value);
+                }
+
+                if (SFresult.Equals("OK"))
+                {
+                    if (!string.IsNullOrEmpty(SFVar["ReturnOK2"]))
+                    {
+                        rundb.SetVarValueEx(SFVar["ReturnOK2"], 1);
+                    }
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(SFVar["ReturnNG2"]))
+                    {
+                        rundb.SetVarValueEx(SFVar["ReturnNG2"], 1);
+                    }
+                }
+            }
+            rundb.Close();
+            rundb = null;
+        }
+
         #endregion CHECK/CHECK2/LINK
 
         #region 画面线程传参数
@@ -534,6 +486,9 @@ namespace SFDemo
                 SFtotalSwitch = false;
                 SFswitchbutton.Text = "SF OFF";
                 SFswitchbutton.BackColor = System.Drawing.Color.Red;
+                SFcheckTrig._Trig = null;
+                SFlinkTrig._Trig = null;
+                SFcheck2Trig._Trig = null;
             }
         }
 
@@ -653,6 +608,21 @@ namespace SFDemo
                 }
             }
             return NameVarPairs;
+        }
+
+        public void WriteSFLog(string SFtype, string trignum, string SFinput, string SFoutput, int retrytime)
+        {
+            string floder = folderPath + DateTime.Now.ToString("yyyy-MM-dd") + "_" + SFVar["Machine"] + ".txt";
+            string logstr = FileUtilHelper.GetLogString(SFtype, DateTime.Now.ToLongTimeString().ToString(), " Trig:" + trignum, SFinput + "SFreturn:" + SFoutput, "重试次数:" + retrytime + "\r\n");
+
+            FileUtilHelper.AppendText(floder, logstr);
+            BackgroundProcess(logstr);
+        }
+
+        public static string GetAppsettingStr(string str)
+        {
+            AppSettingsReader appReader = new AppSettingsReader();
+            return appReader.GetValue(str, typeof(string)).ToString();
         }
 
         #endregion 存储过程所需文本 拼接
