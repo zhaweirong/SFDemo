@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SFDemo
 {
@@ -31,7 +27,7 @@ namespace SFDemo
             get { return _Trig; }
             set
             {
-                if (int.TryParse(value, out int result) && (this._Trig != value))
+                if (this._Trig != value)
                 {
                     if (string.IsNullOrEmpty(this._Trig) || string.IsNullOrEmpty(value))
                     {

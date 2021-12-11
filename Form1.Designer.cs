@@ -202,6 +202,7 @@ namespace SFDemo
             this.Controls.Add(this.SFPanel);
             this.Controls.Add(this.HivePanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "ABB_SF";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);

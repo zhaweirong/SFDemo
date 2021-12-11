@@ -37,24 +37,24 @@ namespace SFDemo
             string output = string.Empty;
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandText = "{ call " + storeProcedureName + " (?,?,?,?,?)}";
-            cmd.CommandTimeout = CommandTimeout ?? 30;
+            cmd.CommandTimeout = 8;
 
-            OdbcParameter parameter1 = new OdbcParameter("@BU", OdbcType.Char);
+            OdbcParameter parameter1 = new OdbcParameter("@BU", OdbcType.VarChar);
             parameter1.Direction = ParameterDirection.Input;
             parameter1.Value = para1;
             cmd.Parameters.Add(parameter1);
 
-            OdbcParameter parameter2 = new OdbcParameter("@Station", OdbcType.Char);
+            OdbcParameter parameter2 = new OdbcParameter("@Station", OdbcType.VarChar);
             parameter2.Direction = ParameterDirection.Input;
             parameter2.Value = para2;
             cmd.Parameters.Add(parameter2);
 
-            OdbcParameter parameter3 = new OdbcParameter("@Step", OdbcType.Char);
+            OdbcParameter parameter3 = new OdbcParameter("@Step", OdbcType.VarChar);
             parameter3.Direction = ParameterDirection.Input;
             parameter3.Value = para3;
             cmd.Parameters.Add(parameter3);
 
-            OdbcParameter parameter4 = new OdbcParameter("@InputStr", OdbcType.Char);
+            OdbcParameter parameter4 = new OdbcParameter("@InputStr", OdbcType.VarChar);
             parameter4.Direction = ParameterDirection.Input;
             parameter4.Value = para4;
             cmd.Parameters.Add(parameter4);
