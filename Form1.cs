@@ -33,9 +33,6 @@ namespace SFDemo
 
         private readonly string folderPath = GetAppsettingStr("Path");
         private readonly int trigPollingtime = int.Parse(GetAppsettingStr("TrigPollingTime"));
-        private readonly string CHECK1ProcedureName = GetAppsettingStr("CHECK1ProcedureName");
-        private readonly string CHECK2ProcedureName = GetAppsettingStr("CHECK2ProcedureName");
-        private readonly string LINKProcedureName = GetAppsettingStr("LINKProcedureName");
 
         private readonly int RetryCount = int.Parse(GetAppsettingStr("RetryCount"));
         private readonly double RetryInterval = (double.Parse(GetAppsettingStr("RetryInterval"))) / 1000;
