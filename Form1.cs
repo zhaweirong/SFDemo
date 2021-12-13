@@ -158,7 +158,7 @@ namespace SFDemo
 
                 Retry.RetryHandle(RetryCount, TimeSpan.FromSeconds(RetryInterval), false, delegate
                 {
-                    output = ProcedureExecuter.ExecuteNonQuery(CHECK1ProcedureName, SFVar["BU"], SFVar["Station"], "Request", InputStr);
+                    //output = ProcedureExecuter.ExecuteNonQuery(CHECK1ProcedureName, SFVar["BU"], SFVar["Station"], "Request", InputStr);
 
                     if ((output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0))
                     {
@@ -220,7 +220,7 @@ namespace SFDemo
                 InputStr = GetVarFromFLEX("Check2InputStr", "Check2Data", "Check2Result");
                 Retry.RetryHandle(RetryCount, TimeSpan.FromSeconds(RetryInterval), false, delegate
                 {
-                    output = ProcedureExecuter.ExecuteNonQuery(CHECK2ProcedureName, SFVar["BU2"], SFVar["Station2"], "Require", InputStr);
+                    //output = ProcedureExecuter.ExecuteNonQuery(CHECK2ProcedureName, SFVar["BU2"], SFVar["Station2"], "Require", InputStr);
                     if (output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0 && output.IndexOf("FAIL", StringComparison.OrdinalIgnoreCase) <= 0)
                     {
                         retrytime++;
@@ -288,7 +288,7 @@ namespace SFDemo
                 InputStr = GetVarFromFLEX("LinkInputStr", "LinkData", "TestResult");
                 Retry.RetryHandle(RetryCount, TimeSpan.FromSeconds(RetryInterval), false, delegate
                 {
-                    output = ProcedureExecuter.ExecuteNonQuery(LINKProcedureName, SFVar["BU"], SFVar["Station"], "Require", InputStr);
+                    //output = ProcedureExecuter.ExecuteNonQuery(LINKProcedureName, SFVar["BU"], SFVar["Station"], "Require", InputStr);
                     if (output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0 && output.IndexOf("FAIL", StringComparison.OrdinalIgnoreCase) <= 0)
                     {
                         retrytime++;
