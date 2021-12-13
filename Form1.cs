@@ -1,6 +1,7 @@
 ﻿using FMDMOLib;
 using Ini.Net;
 using Lin.LogHelper;
+using SFSATPortal;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,6 +16,7 @@ namespace SFDemo
         private const string spiltxt = ";$;";
         private System.Threading.Timer timer = null;
         private System.Threading.Timer CheckProcesstimer = null;
+        private Portal portal = new Portal();
 
         private Dictionary<string, string> SFVar;
 
@@ -159,7 +161,7 @@ namespace SFDemo
                 Retry.RetryHandle(RetryCount, TimeSpan.FromSeconds(RetryInterval), false, delegate
                 {
                     //output = ProcedureExecuter.ExecuteNonQuery(CHECK1ProcedureName, SFVar["BU"], SFVar["Station"], "Request", InputStr);
-
+                    output = portal.ATPortal(SFVar["Station"], "Request", InputStr);
                     if ((output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0))
                     {
                         retrytime++;
@@ -221,6 +223,7 @@ namespace SFDemo
                 Retry.RetryHandle(RetryCount, TimeSpan.FromSeconds(RetryInterval), false, delegate
                 {
                     //output = ProcedureExecuter.ExecuteNonQuery(CHECK2ProcedureName, SFVar["BU2"], SFVar["Station2"], "Require", InputStr);
+                    output = portal.ATPortal(SFVar["Station2"], "Require", InputStr);
                     if (output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0 && output.IndexOf("FAIL", StringComparison.OrdinalIgnoreCase) <= 0)
                     {
                         retrytime++;
@@ -289,6 +292,7 @@ namespace SFDemo
                 Retry.RetryHandle(RetryCount, TimeSpan.FromSeconds(RetryInterval), false, delegate
                 {
                     //output = ProcedureExecuter.ExecuteNonQuery(LINKProcedureName, SFVar["BU"], SFVar["Station"], "Require", InputStr);
+                    output = portal.ATPortal(SFVar["Station"], "Require", InputStr);
                     if (output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0 && output.IndexOf("FAIL", StringComparison.OrdinalIgnoreCase) <= 0)
                     {
                         retrytime++;
