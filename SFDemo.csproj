@@ -102,7 +102,7 @@
   <ItemGroup>
     <Compile Include="BLL\GlobalConfig.cs" />
     <Compile Include="BLL\ReadWriteToFlexUI.cs" />
-    <Compile Include="BLL\SFVarConfig.cs" />
+    <Compile Include="BLL\VarConfig.cs" />
     <Compile Include="Model\checkModel.cs" />
     <Compile Include="Model\linkModel.cs" />
     <Compile Include="Util\FileUtilHelper.cs" />

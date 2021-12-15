@@ -13,5 +13,6 @@ namespace SFDemo.Model
         public string inputStr { get; set; }
         public string outputStr { get; set; }
         public string logName { get; set; }
+        public bool linkSwitch { get; set; }
     }
 }

@@ -42,6 +42,8 @@ namespace SFDemo
             this.FlexUIStatus = new System.Windows.Forms.Label();
             this.currentPaneltext = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.SettingButton = new System.Windows.Forms.Button();
+            this.SettingPanel = new System.Windows.Forms.Panel();
             this.SFPanel.SuspendLayout();
             this.HivePanel.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -51,6 +53,7 @@ namespace SFDemo
             // 
             // SFPanel
             // 
+            this.SFPanel.Controls.Add(this.SettingPanel);
             this.SFPanel.Controls.Add(this.SFlistBox);
             this.SFPanel.Location = new System.Drawing.Point(115, 48);
             this.SFPanel.Name = "SFPanel";
@@ -93,6 +96,7 @@ namespace SFDemo
             this.tableLayoutPanel1.BackColor = System.Drawing.Color.White;
             this.tableLayoutPanel1.ColumnCount = 1;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Controls.Add(this.SettingButton, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.HiveButton, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.SFButton, 0, 0);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(10, 48);
@@ -192,7 +196,28 @@ namespace SFDemo
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
-            // Form1
+            // SettingButton
+            // 
+            this.SettingButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.SettingButton.BackColor = System.Drawing.Color.White;
+            this.SettingButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SettingButton.Location = new System.Drawing.Point(0, 312);
+            this.SettingButton.Margin = new System.Windows.Forms.Padding(0);
+            this.SettingButton.Name = "SettingButton";
+            this.SettingButton.Size = new System.Drawing.Size(105, 89);
+            this.SettingButton.TabIndex = 2;
+            this.SettingButton.Text = "设置";
+            this.SettingButton.UseVisualStyleBackColor = false;
+            this.SettingButton.Click += new System.EventHandler(this.SettingButton_Click);
+            // 
+            // SettingPanel
+            // 
+            this.SettingPanel.Location = new System.Drawing.Point(0, 0);
+            this.SettingPanel.Name = "SettingPanel";
+            this.SettingPanel.Size = new System.Drawing.Size(686, 402);
+            this.SettingPanel.TabIndex = 3;
+            // 
+            // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -203,9 +228,9 @@ namespace SFDemo
             this.Controls.Add(this.HivePanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "Form1";
+            this.Name = "MainWindow";
             this.Text = "ABB_SF";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_Closing);
             this.SFPanel.ResumeLayout(false);
             this.HivePanel.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
@@ -230,6 +255,8 @@ namespace SFDemo
         private System.Windows.Forms.Label currentPaneltext;
         private System.Windows.Forms.Label FlexUIStatus;
         private System.Windows.Forms.Button SFswitchbutton;
+        private System.Windows.Forms.Button SettingButton;
+        private System.Windows.Forms.Panel SettingPanel;
     }
 }
 

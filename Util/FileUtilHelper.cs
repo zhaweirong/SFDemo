@@ -612,6 +612,11 @@ namespace SFDemo
             return result;
         }
 
+        public static bool CheckIfUncaseString(string str, string value)
+        {
+            return string.Equals(str, value, StringComparison.OrdinalIgnoreCase);
+        }
+
         #endregion 自定义文本格式转换
     }
 }
