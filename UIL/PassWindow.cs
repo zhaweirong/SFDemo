@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Windows.Forms;
-using static SFDemo.Form1;
+using static SFDemo.MainWindow;
 
 namespace SFDemo
 {
-    public partial class Form2 : Form
+    public partial class PassWindow : Form
     {
-        public Form2()
+        public PassWindow()
         {
             InitializeComponent();
             this.FormBorderStyle = FormBorderStyle.None;

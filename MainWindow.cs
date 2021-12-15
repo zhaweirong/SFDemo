@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace SFDemo
 {
-    public partial class Form1 : Form
+    public partial class MainWindow : Form
     {
         private const string spiltxt = ";$;";
         private System.Threading.Timer timer = null;
@@ -44,7 +44,7 @@ namespace SFDemo
 
         private string close = "";
 
-        public Form1()
+        public MainWindow()
 
         {
             InitializeComponent();
@@ -500,7 +500,7 @@ namespace SFDemo
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Form2 doc = new Form2();
+            PassWindow doc = new PassWindow();
             doc.StartPosition = FormStartPosition.CenterParent;
             doc.EventCloseWindow += new DCloseWindow(doc_EventCloseWindow);
             doc.ShowDialog();

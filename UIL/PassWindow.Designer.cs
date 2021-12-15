@@ -1,7 +1,7 @@
 ﻿
 namespace SFDemo
 {
-    partial class Form2
+    partial class PassWindow
     {
         /// <summary>
         /// Required designer variable.

@@ -1,7 +1,7 @@
 ﻿
 namespace SFDemo
 {
-    partial class Form1
+    partial class MainWindow
     {
         /// <summary>
         /// 必需的设计器变量。
@@ -29,7 +29,7 @@ namespace SFDemo
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.SFPanel = new System.Windows.Forms.Panel();
             this.SFlistBox = new System.Windows.Forms.ListBox();
             this.HivePanel = new System.Windows.Forms.Panel();
