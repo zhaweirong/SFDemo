@@ -132,6 +132,7 @@ namespace SFDemo
                 Retry.RetryHandle(GlobalConfig.RetryCount, TimeSpan.FromSeconds(GlobalConfig.RetryInterval), false, delegate
                 {
                     output = portal.ATPortal(VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
+
                     if ((output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0))
                     {
                         retrytime++;
