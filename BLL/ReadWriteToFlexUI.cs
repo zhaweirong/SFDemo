@@ -1,9 +1,6 @@
 ﻿using FMDMOLib;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SFDemo.BLL
 {
@@ -70,7 +67,14 @@ namespace SFDemo.BLL
                         var enumerator = InputstrPairs.GetEnumerator();
                         while (enumerator.MoveNext())
                         {
-                            result = result + enumerator.Current.Key + "=" + Convert.ToString(rundb.GetVarValueEx(enumerator.Current.Value)) + spiltxt;
+                            if (enumerator.Current.Value.Contains("."))
+                            {
+                                result = result + enumerator.Current.Key + "=" + Convert.ToString(rundb.GetVarValueEx(enumerator.Current.Value)) + spiltxt;
+                            }
+                            else
+                            {
+                                result = result + enumerator.Current.Key + "=" + enumerator.Current.Value + spiltxt;
+                            }
                         }
                         InputstrPairs = null;
                     }
@@ -170,7 +174,7 @@ namespace SFDemo.BLL
         public static Dictionary<string, string> GetInputStrVar(string inputstr)
         {
             Dictionary<string, string> NameVarPairs = new Dictionary<string, string>();
-            string[] sArray = inputstr.Split('/');
+            string[] sArray = inputstr.Split('|');
             string[] teampArray;
             foreach (string i in sArray)
             {

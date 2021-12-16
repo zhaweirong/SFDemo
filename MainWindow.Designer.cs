@@ -31,7 +31,6 @@ namespace SFDemo
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.SFPanel = new System.Windows.Forms.Panel();
-            this.SettingPanel = new System.Windows.Forms.Panel();
             this.SFlistBox = new System.Windows.Forms.ListBox();
             this.HivePanel = new System.Windows.Forms.Panel();
             this.HivelistBox = new System.Windows.Forms.ListBox();
@@ -44,35 +43,25 @@ namespace SFDemo
             this.FlexUIStatus = new System.Windows.Forms.Label();
             this.currentPaneltext = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.ReCheck1 = new System.Windows.Forms.Button();
+            this.SettingPanel = new System.Windows.Forms.Panel();
             this.ReCheck2 = new System.Windows.Forms.Button();
+            this.ReCheck1 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.SFPanel.SuspendLayout();
-            this.SettingPanel.SuspendLayout();
             this.HivePanel.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.HeadPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.SettingPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // SFPanel
             // 
-            this.SFPanel.Controls.Add(this.SettingPanel);
             this.SFPanel.Controls.Add(this.SFlistBox);
             this.SFPanel.Location = new System.Drawing.Point(115, 48);
             this.SFPanel.Name = "SFPanel";
             this.SFPanel.Size = new System.Drawing.Size(686, 402);
             this.SFPanel.TabIndex = 2;
-            // 
-            // SettingPanel
-            // 
-            this.SettingPanel.Controls.Add(this.label1);
-            this.SettingPanel.Controls.Add(this.ReCheck2);
-            this.SettingPanel.Controls.Add(this.ReCheck1);
-            this.SettingPanel.Location = new System.Drawing.Point(0, 0);
-            this.SettingPanel.Name = "SettingPanel";
-            this.SettingPanel.Size = new System.Drawing.Size(686, 402);
-            this.SettingPanel.TabIndex = 3;
             // 
             // SFlistBox
             // 
@@ -224,32 +213,41 @@ namespace SFDemo
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
-            // ReCheck1
+            // SettingPanel
             // 
-            this.ReCheck1.Location = new System.Drawing.Point(66, 61);
-            this.ReCheck1.Name = "ReCheck1";
-            this.ReCheck1.Size = new System.Drawing.Size(100, 42);
-            this.ReCheck1.TabIndex = 1;
-            this.ReCheck1.Text = "Check1";
-            this.ReCheck1.UseVisualStyleBackColor = true;
-            this.ReCheck1.Click += new System.EventHandler(this.ReCheck1_Click);
+            this.SettingPanel.Controls.Add(this.ReCheck2);
+            this.SettingPanel.Controls.Add(this.ReCheck1);
+            this.SettingPanel.Controls.Add(this.label1);
+            this.SettingPanel.Location = new System.Drawing.Point(115, 48);
+            this.SettingPanel.Name = "SettingPanel";
+            this.SettingPanel.Size = new System.Drawing.Size(682, 395);
+            this.SettingPanel.TabIndex = 5;
             // 
             // ReCheck2
             // 
-            this.ReCheck2.Location = new System.Drawing.Point(66, 131);
+            this.ReCheck2.Location = new System.Drawing.Point(43, 141);
             this.ReCheck2.Name = "ReCheck2";
             this.ReCheck2.Size = new System.Drawing.Size(100, 47);
-            this.ReCheck2.TabIndex = 3;
+            this.ReCheck2.TabIndex = 6;
             this.ReCheck2.Text = "Check2";
             this.ReCheck2.UseVisualStyleBackColor = true;
+            // 
+            // ReCheck1
+            // 
+            this.ReCheck1.Location = new System.Drawing.Point(43, 71);
+            this.ReCheck1.Name = "ReCheck1";
+            this.ReCheck1.Size = new System.Drawing.Size(100, 42);
+            this.ReCheck1.TabIndex = 5;
+            this.ReCheck1.Text = "Check1";
+            this.ReCheck1.UseVisualStyleBackColor = true;
             // 
             // label1
             // 
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(39, 4);
+            this.label1.Location = new System.Drawing.Point(16, 14);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(170, 39);
-            this.label1.TabIndex = 4;
+            this.label1.TabIndex = 7;
             this.label1.Text = "手动Check";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
@@ -258,6 +256,7 @@ namespace SFDemo
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.SettingPanel);
             this.Controls.Add(this.HeadPanel);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.SFPanel);
@@ -268,12 +267,12 @@ namespace SFDemo
             this.Text = "ABB_SF";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_Closing);
             this.SFPanel.ResumeLayout(false);
-            this.SettingPanel.ResumeLayout(false);
             this.HivePanel.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.HeadPanel.ResumeLayout(false);
             this.HeadPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.SettingPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -294,9 +293,9 @@ namespace SFDemo
         private System.Windows.Forms.Button SFswitchbutton;
         private System.Windows.Forms.Button SettingButton;
         private System.Windows.Forms.Panel SettingPanel;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button ReCheck2;
         private System.Windows.Forms.Button ReCheck1;
+        private System.Windows.Forms.Label label1;
     }
 }
 
