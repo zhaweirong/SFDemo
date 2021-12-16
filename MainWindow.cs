@@ -94,15 +94,15 @@ namespace SFDemo
                             }
                             if (VarConfig.checkVarExist("Check2Trig"))
                             {
-                                SFCheck1Trig.Trig = Convert.ToString(rundb.GetVarValueEx(VarConfig.SFVar["Check2Trig"]));
+                                SFCheck2Trig.Trig = Convert.ToString(rundb.GetVarValueEx(VarConfig.SFVar["Check2Trig"]));
                             }
                             if (VarConfig.checkVarExist("Link1Trig"))
                             {
-                                SFCheck1Trig.Trig = Convert.ToString(rundb.GetVarValueEx(VarConfig.SFVar["Link1Trig"]));
+                                SFLink1Trig.Trig = Convert.ToString(rundb.GetVarValueEx(VarConfig.SFVar["Link1Trig"]));
                             }
                             if (VarConfig.checkVarExist("Link2Trig"))
                             {
-                                SFCheck1Trig.Trig = Convert.ToString(rundb.GetVarValueEx(VarConfig.SFVar["Link2Trig"]));
+                                SFLink2Trig.Trig = Convert.ToString(rundb.GetVarValueEx(VarConfig.SFVar["Link2Trig"]));
                             }
                         }
                     }

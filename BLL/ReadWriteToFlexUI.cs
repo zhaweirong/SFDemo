@@ -63,78 +63,87 @@ namespace SFDemo.BLL
                 {
                     if (x == 0)
                     {
-                        Dictionary<string, string> InputstrPairs = new Dictionary<string, string>(GetInputStrVar(VarConfig.SFVar[values[x]]));
-                        var enumerator = InputstrPairs.GetEnumerator();
-                        while (enumerator.MoveNext())
+                        if (VarConfig.checkVarExist(values[x]))
                         {
-                            if (enumerator.Current.Value.Contains("."))
+                            Dictionary<string, string> InputstrPairs = new Dictionary<string, string>(GetInputStrVar(VarConfig.SFVar[values[x]]));
+                            var enumerator = InputstrPairs.GetEnumerator();
+                            while (enumerator.MoveNext())
                             {
-                                result = result + enumerator.Current.Key + "=" + Convert.ToString(rundb.GetVarValueEx(enumerator.Current.Value)) + spiltxt;
+                                if (enumerator.Current.Value.Contains("."))
+                                {
+                                    result = result + enumerator.Current.Key + "=" + Convert.ToString(rundb.GetVarValueEx(enumerator.Current.Value)) + spiltxt;
+                                }
+                                else
+                                {
+                                    result = result + enumerator.Current.Key + "=" + enumerator.Current.Value + spiltxt;
+                                }
                             }
-                            else
-                            {
-                                result = result + enumerator.Current.Key + "=" + enumerator.Current.Value + spiltxt;
-                            }
+                            InputstrPairs = null;
                         }
-                        InputstrPairs = null;
                     }
                     else if (x == 1)
                     {
-                        int temp = 0;
-                        result += "data=";
-                        Dictionary<string, string> LinkDataPairs = new Dictionary<string, string>(GetInputStrVar(VarConfig.SFVar[values[x]]));
-
-                        var enumeratorlink = LinkDataPairs.GetEnumerator();
-                        while (enumeratorlink.MoveNext())
+                        if (VarConfig.checkVarExist(values[x]))
                         {
-                            temp++;
-                            if (string.IsNullOrEmpty(enumeratorlink.Current.Value))
+                            int temp = 0;
+                            result += "data=";
+                            Dictionary<string, string> LinkDataPairs = new Dictionary<string, string>(GetInputStrVar(VarConfig.SFVar[values[x]]));
+
+                            var enumeratorlink = LinkDataPairs.GetEnumerator();
+                            while (enumeratorlink.MoveNext())
                             {
-                                if (temp == LinkDataPairs.Count)
+                                temp++;
+                                if (string.IsNullOrEmpty(enumeratorlink.Current.Value))
                                 {
-                                    result = result + Convert.ToString(rundb.GetVarValueEx(enumeratorlink.Current.Key));
+                                    if (temp == LinkDataPairs.Count)
+                                    {
+                                        result = result + Convert.ToString(rundb.GetVarValueEx(enumeratorlink.Current.Key));
+                                    }
+                                    else
+                                    {
+                                        result = result + Convert.ToString(rundb.GetVarValueEx(enumeratorlink.Current.Key)) + @"\";
+                                    }
                                 }
                                 else
                                 {
-                                    result = result + Convert.ToString(rundb.GetVarValueEx(enumeratorlink.Current.Key)) + @"\";
+                                    if (temp == LinkDataPairs.Count)
+                                    {
+                                        result = result + enumeratorlink.Current.Key + " = " + Convert.ToString(rundb.GetVarValueEx(enumeratorlink.Current.Value));
+                                    }
+                                    else
+                                    {
+                                        result = result + enumeratorlink.Current.Key + " = " + Convert.ToString(rundb.GetVarValueEx(enumeratorlink.Current.Value)) + @"\";
+                                    }
                                 }
                             }
-                            else
-                            {
-                                if (temp == LinkDataPairs.Count)
-                                {
-                                    result = result + enumeratorlink.Current.Key + " = " + Convert.ToString(rundb.GetVarValueEx(enumeratorlink.Current.Value));
-                                }
-                                else
-                                {
-                                    result = result + enumeratorlink.Current.Key + " = " + Convert.ToString(rundb.GetVarValueEx(enumeratorlink.Current.Value)) + @"\";
-                                }
-                            }
+                            LinkDataPairs = null;
+                            result += spiltxt;
                         }
-                        LinkDataPairs = null;
-                        result += spiltxt;
                     }
                     else if (x == 2)
                     {
-                        string testResult = VarConfig.SFVar["TestResult"];
-                        if (FileUtilHelper.CheckIfUncaseString(testResult, "PASS") || FileUtilHelper.CheckIfUncaseString(testResult, "Fail"))
+                        if (VarConfig.checkVarExist(values[x]))
                         {
-                            result = result + "TestResult=" + testResult + spiltxt;
-                        }
-                        else
-                        {
-                            string tempstr = Convert.ToString(rundb.GetVarValueEx(testResult));
-                            if (tempstr.Equals("0"))
+                            string testResult = VarConfig.SFVar[values[x]];
+                            if (FileUtilHelper.CheckIfUncaseString(testResult, "PASS") || FileUtilHelper.CheckIfUncaseString(testResult, "Fail"))
                             {
-                                result = result + "TestResult=PASS" + spiltxt;
-                            }
-                            else if (tempstr.Equals("1"))
-                            {
-                                result = result + "TestResult=Fail" + spiltxt;
+                                result = result + "TestResult=" + testResult + spiltxt;
                             }
                             else
                             {
-                                result = result + "TestResult=" + tempstr + spiltxt;
+                                string tempstr = Convert.ToString(rundb.GetVarValueEx(testResult));
+                                if (tempstr.Equals("0"))
+                                {
+                                    result = result + "TestResult=PASS" + spiltxt;
+                                }
+                                else if (tempstr.Equals("1"))
+                                {
+                                    result = result + "TestResult=Fail" + spiltxt;
+                                }
+                                else
+                                {
+                                    result = result + "TestResult=" + tempstr + spiltxt;
+                                }
                             }
                         }
                     }
