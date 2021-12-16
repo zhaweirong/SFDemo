@@ -11,123 +11,42 @@ namespace SFDemo.BLL
     {
         private const string spiltxt = ";$;";
 
-        public static void DHACheckReturn(string value, string v)
+        public static void SFReturnToFLEX(string result, string name)
         {
             FMDMOLib.Rundb rundb = new Rundb();
             object dbn = rundb.Open();
             if (Convert.ToInt16(dbn) == 1)
             {
-                if (!string.IsNullOrEmpty(VarConfig.SFVar["ReturnSFMessage"]))
+                if (VarConfig.checkVarExist("ReturnSFMessage"))
                 {
-                    rundb.SetVarValueEx(VarConfig.SFVar["ReturnSFMessage"], value);
+                    rundb.SetVarValueEx(VarConfig.SFVar["ReturnSFMessage"], result);
                 }
 
-                if (v == "OK")
+                if (VarConfig.checkVarExist(name + "ReturnOK"))
                 {
-                    rundb.SetVarValueEx("DR.CHECKOK", 1);
-                    rundb.SetVarValueEx("VA.CHIN_COLOUR", 1);
-                }
-                else
-                {
-                    rundb.SetVarValueEx("DR.CHECKNOK", 1);
-                    rundb.SetVarValueEx("VA.CHIN_COLOUR", 2);
-                }
-            }
-            rundb.Close();
-            rundb = null;
-        }
-
-        public static void DHALinkReturn()
-        {
-            FMDMOLib.Rundb rundb = new Rundb();
-            object dbn = rundb.Open();
-            if (Convert.ToInt16(dbn) == 1)
-            {
-                rundb.SetVarValueEx("DR.UPLOADFINISH", 1);
-            }
-            rundb.Close();
-            rundb = null;
-        }
-
-        public static void DHACheck2Return(string value, string v)
-        {
-            FMDMOLib.Rundb rundb = new Rundb();
-            object dbn = rundb.Open();
-            if (Convert.ToInt16(dbn) == 1)
-            {
-                if (!string.IsNullOrEmpty(VarConfig.SFVar["ReturnSFMessage"]))
-                {
-                    rundb.SetVarValueEx(VarConfig.SFVar["ReturnSFMessage"], value);
-                }
-
-                if (v == "OK")
-                {
-                    rundb.SetVarValueEx("DR.LINK_OK_TFT", 1);
-                    rundb.SetVarValueEx("DR.LINK_NG_TFT", 0);
-                    rundb.SetVarValueEx("DR.LINK_REQUESR_TFT", 0);
-                }
-                else
-                {
-                    rundb.SetVarValueEx("DR.LINK_OK_TFT", 0);
-                    rundb.SetVarValueEx("DR.LINK_NG_TFT", 1);
-                    rundb.SetVarValueEx("DR.LINK_REQUESR_TFT", 0);
-                }
-            }
-            rundb.Close();
-            rundb = null;
-        }
-
-        public static void ReturnMessageToFlexUI(string value)
-        {
-            FMDMOLib.Rundb rundb = new Rundb();
-            object dbn = rundb.Open();
-            if (Convert.ToInt16(dbn) == 1)
-            {
-                if (!string.IsNullOrEmpty(VarConfig.SFVar["ReturnSFMessage"]))
-                {
-                    rundb.SetVarValueEx(VarConfig.SFVar["ReturnSFMessage"], value);
-                }
-            }
-            rundb.Close();
-            rundb = null;
-        }
-
-        public static void ReturnMessageToFlexUI(string value, string SFresult)
-        {
-            FMDMOLib.Rundb rundb = new Rundb();
-            object dbn = rundb.Open();
-            if (Convert.ToInt16(dbn) == 1)
-            {
-                if (!string.IsNullOrEmpty(VarConfig.SFVar["ReturnSFMessage"]))
-                {
-                    rundb.SetVarValueEx(VarConfig.SFVar["ReturnSFMessage"], value);
-                }
-
-                if (SFresult.Equals("OK"))
-                {
-                    if (!string.IsNullOrEmpty(VarConfig.SFVar["ReturnOK"]))
+                    if (CheckContainUncaseString(result, "PASS"))
                     {
-                        rundb.SetVarValueEx(VarConfig.SFVar["ReturnOK"], 1);
+                        rundb.SetVarValueEx(VarConfig.SFVar[name + "ReturnOK"], 1);
+                    }
+                    else
+                    {
+                        rundb.SetVarValueEx(VarConfig.SFVar[name + "ReturnOK"], 0);
                     }
                 }
-                else
+                if (VarConfig.checkVarExist(name + "ReturnNG"))
                 {
-                    if (!string.IsNullOrEmpty(VarConfig.SFVar["ReturnNG"]))
+                    if (CheckContainUncaseString(result, "PASS"))
                     {
-                        rundb.SetVarValueEx(VarConfig.SFVar["ReturnNG"], 1);
+                        rundb.SetVarValueEx(VarConfig.SFVar[name + "ReturnNG"], 0);
+                    }
+                    else
+                    {
+                        rundb.SetVarValueEx(VarConfig.SFVar[name + "ReturnNG"], 1);
                     }
                 }
             }
             rundb.Close();
             rundb = null;
-        }
-
-        public static void WriteAny()
-        {
-        }
-
-        public static void ReadAny()
-        {
         }
 
         //根据固定文本格式从flexui取得数据
@@ -155,7 +74,7 @@ namespace SFDemo.BLL
                         }
                         InputstrPairs = null;
                     }
-                    else if (values[x].Equals("LinkData"))
+                    else if (x == 1)
                     {
                         int temp = 0;
                         result += "data=";
@@ -191,7 +110,7 @@ namespace SFDemo.BLL
                         LinkDataPairs = null;
                         result += spiltxt;
                     }
-                    else if (values[x].Equals("TestResult"))
+                    else if (x == 2)
                     {
                         string testResult = VarConfig.SFVar["TestResult"];
                         if (FileUtilHelper.CheckIfUncaseString(testResult, "PASS") || FileUtilHelper.CheckIfUncaseString(testResult, "Fail"))
@@ -215,39 +134,32 @@ namespace SFDemo.BLL
                             }
                         }
                     }
-                    else if (values[x].Equals("Check2Result"))
-                    {
-                        string testResult = VarConfig.SFVar["Check2Result"];
-                        if (FileUtilHelper.CheckIfUncaseString(testResult, "PASS") || FileUtilHelper.CheckIfUncaseString(testResult, "Fail"))
-                        {
-                            result = result + "TestResult=" + testResult + spiltxt;
-                        }
-                        else
-                        {
-                            string tempstr = Convert.ToString(rundb.GetVarValueEx(testResult));
-                            if (tempstr.Equals(0))
-                            {
-                                result = result + "TestResult=PASS" + spiltxt;
-                            }
-                            else if (tempstr.Equals(1))
-                            {
-                                result = result + "TestResult=Fail" + spiltxt;
-                            }
-                            else
-                            {
-                                result = result + "TestResult=" + tempstr + spiltxt;
-                            }
-                        }
-                    }
-                    else if (values[x].Equals("Check2Data"))
-                    {
-                        result = result + "data=0" + spiltxt;
-                    }
                     else
                     {
                         result += spiltxt;
                     }
                 }
+            }
+            rundb.Close();
+            rundb = null;
+            return result;
+        }
+
+        public static string GetVarHandleRecheck(string value)
+        {
+            string result = string.Empty;
+
+            FMDMOLib.Rundb rundb = new Rundb();
+            object dbn = rundb.Open();
+            if (Convert.ToInt16(dbn) == 1)
+            {
+                Dictionary<string, string> InputstrPairs = new Dictionary<string, string>(GetInputStrVar(VarConfig.SFVar[value]));
+                var enumerator = InputstrPairs.GetEnumerator();
+                while (enumerator.MoveNext())
+                {
+                    result = result + enumerator.Current.Key + "=" + Convert.ToString(rundb.GetVarValueEx(enumerator.Current.Value)) + spiltxt;
+                }
+                InputstrPairs = null;
             }
             rundb.Close();
             rundb = null;
@@ -273,6 +185,11 @@ namespace SFDemo.BLL
                 }
             }
             return NameVarPairs;
+        }
+
+        public static bool CheckContainUncaseString(string str, string value)
+        {
+            return str.IndexOf(value, StringComparison.OrdinalIgnoreCase) >= 0;
         }
     }
 }

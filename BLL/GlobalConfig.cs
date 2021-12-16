@@ -11,6 +11,7 @@ namespace SFDemo.BLL
 
     {
         public static readonly string folderPath = GetAppsettingStr("Path");
+        public static readonly string SFWAY = GetAppsettingStr("SFWAY");
         public static readonly int trigPollingtime = int.Parse(GetAppsettingStr("TrigPollingTime"));
 
         public static readonly int RetryCount = int.Parse(GetAppsettingStr("RetryCount"));

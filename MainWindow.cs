@@ -17,10 +17,10 @@ namespace SFDemo
         private System.Threading.Timer PollingFromFlextimer = null;
         private System.Threading.Timer CheckProcesstimer = null;
 
-        private TrigVar SFcheck1Trig = new TrigVar();
-        private TrigVar SFcheck2Trig = new TrigVar();
-        private TrigVar SFlink1Trig = new TrigVar();
-        private TrigVar SFlink2Trig = new TrigVar();
+        private TrigVar SFCheck1Trig = new TrigVar();
+        private TrigVar SFCheck2Trig = new TrigVar();
+        private TrigVar SFLink1Trig = new TrigVar();
+        private TrigVar SFLink2Trig = new TrigVar();
 
         private bool StartPollingTrig = true;
 
@@ -41,10 +41,10 @@ namespace SFDemo
 
             FileUtilHelper.CreateDirectory(GlobalConfig.folderPath);
 
-            SFcheck1Trig.PropertyChanged += SFcheck1;
-            SFcheck2Trig.PropertyChanged += SFcheck2;
-            SFlink1Trig.PropertyChanged += SFlink1;
-            SFlink2Trig.PropertyChanged += SFlink2;
+            SFCheck1Trig.PropertyChanged += SFCheck1;
+            SFCheck2Trig.PropertyChanged += SFCheck2;
+            SFLink1Trig.PropertyChanged += SFLink1;
+            SFLink2Trig.PropertyChanged += SFLink2;
 
             //Check FlexUI OPEN
             CheckFlexUIProcess();
@@ -89,10 +89,22 @@ namespace SFDemo
                     {
                         if (SFtotalSwitch)
                         {
-                            SFcheck1Trig.Trig = Convert.ToString(rundb.GetVarValueEx(VarConfig.SFVar["Check1Trig"]));
-                            SFcheck2Trig.Trig = Convert.ToString(rundb.GetVarValueEx(VarConfig.SFVar["Check2Trig"]));
-                            SFlink1Trig.Trig = Convert.ToString(rundb.GetVarValueEx(VarConfig.SFVar["Link1Trig"]));
-                            SFlink2Trig.Trig = Convert.ToString(rundb.GetVarValueEx(VarConfig.SFVar["Link2Trig"]));
+                            if (VarConfig.checkVarExist("Check1Trig"))
+                            {
+                                SFCheck1Trig.Trig = Convert.ToString(rundb.GetVarValueEx(VarConfig.SFVar["Check1Trig"]));
+                            }
+                            if (VarConfig.checkVarExist("Check2Trig"))
+                            {
+                                SFCheck1Trig.Trig = Convert.ToString(rundb.GetVarValueEx(VarConfig.SFVar["Check2Trig"]));
+                            }
+                            if (VarConfig.checkVarExist("Link1Trig"))
+                            {
+                                SFCheck1Trig.Trig = Convert.ToString(rundb.GetVarValueEx(VarConfig.SFVar["Link1Trig"]));
+                            }
+                            if (VarConfig.checkVarExist("Link2Trig"))
+                            {
+                                SFCheck1Trig.Trig = Convert.ToString(rundb.GetVarValueEx(VarConfig.SFVar["Link2Trig"]));
+                            }
                         }
                     }
                     rundb.Close();
@@ -104,59 +116,46 @@ namespace SFDemo
 
         #region CHECK1/CHECK2/LINK1/LINK2
 
-        private void SFcheck1(object sender, PropertyChangedEventArgs e)
+        private void SFCheck1(object sender, PropertyChangedEventArgs e)
         {
-            if (string.IsNullOrEmpty(SFcheck1Trig.Trig)) { return; }
+            if (string.IsNullOrEmpty(SFCheck1Trig.Trig)) { return; }
 
+            string name = "Check1";
             string output = string.Empty;
             string InputStr = string.Empty;
             int retrytime = 0;
             string retryReason = string.Empty;
             try
             {
-                InputStr = ReadWriteToFlexUI.GetVarFromFLEX("CheckInputStr");
+                Portal portal = new Portal();
+                InputStr = ReadWriteToFlexUI.GetVarFromFLEX(name + "InputStr");
 
                 Retry.RetryHandle(GlobalConfig.RetryCount, TimeSpan.FromSeconds(GlobalConfig.RetryInterval), false, delegate
                 {
-                    //output = ProcedureExecuter.ExecuteNonQuery(CHECK1ProcedureName, SFVar["BU"], SFVar["Station"], "Request", InputStr);
-                    Portal portal = new Portal();
-                    output = portal.ATPortal(VarConfig.SFVar["Station"], "Request", InputStr);
+                    output = portal.ATPortal(VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
                     if ((output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0))
                     {
                         retrytime++;
                         retryReason = retryReason + "次数" + retrytime + ":" + output + ";";
 
-                        throw new Exception("SFCheckReturnErrorMsg");
+                        throw new Exception("SFCheck1ReturnErrorMsg");
                     }
                 });
+
                 if (retrytime > 0)
                 {
-                    ("checkRetry:" + retryReason).LogForDebug();
+                    ("check1Retry:" + retryReason).LogForDebug();
                 }
 
-                if (string.Equals(output.Substring(11, 4), "PASS", StringComparison.OrdinalIgnoreCase))
+                ReadWriteToFlexUI.SFReturnToFLEX(output, name);
+
+                if (ReadWriteToFlexUI.CheckContainUncaseString(output, "PASS"))
                 {
-                    if (VarConfig.SFVar["Machine"].Equals("DHA"))
-                    {
-                        ReadWriteToFlexUI.DHACheckReturn(output, "OK");
-                    }
-                    else
-                    {
-                        ReadWriteToFlexUI.ReturnMessageToFlexUI(output, "OK");
-                    }
-                    SoundHelper.PlaySound("CheckOK");
+                    SoundHelper.PlaySound("Check1OK");
                 }
                 else
                 {
-                    if (VarConfig.SFVar["Machine"].Equals("DHA"))
-                    {
-                        ReadWriteToFlexUI.DHACheckReturn(output, "NG");
-                    }
-                    else
-                    {
-                        ReadWriteToFlexUI.ReturnMessageToFlexUI(output, "NG");
-                    }
-                    SoundHelper.PlaySound("CheckNG");
+                    SoundHelper.PlaySound("Check1NG");
                 }
 
                 WriteSFLog(GlobalConfig.CheckLogName[0], e.PropertyName, InputStr, output, retrytime);
@@ -168,22 +167,23 @@ namespace SFDemo
             }
         }
 
-        private void SFcheck2(object sender, PropertyChangedEventArgs e)
+        private void SFCheck2(object sender, PropertyChangedEventArgs e)
         {
-            if (string.IsNullOrEmpty(SFcheck2Trig.Trig)) { return; }
+            if (string.IsNullOrEmpty(SFCheck2Trig.Trig)) { return; }
 
+            string name = "Check2";
             string output = string.Empty;
             string InputStr = string.Empty;
             int retrytime = 0;
             string retryReason = string.Empty;
             try
             {
-                InputStr = ReadWriteToFlexUI.GetVarFromFLEX("Check2InputStr", "Check2Data", "Check2Result");
+                Portal portal = new Portal();
+                InputStr = ReadWriteToFlexUI.GetVarFromFLEX(name + "InputStr");
+
                 Retry.RetryHandle(GlobalConfig.RetryCount, TimeSpan.FromSeconds(GlobalConfig.RetryInterval), false, delegate
                 {
-                    //output = ProcedureExecuter.ExecuteNonQuery(CHECK2ProcedureName, SFVar["BU2"], SFVar["Station2"], "Require", InputStr);
-                    Portal portal = new Portal();
-                    output = portal.ATPortal(VarConfig.SFVar["Station2"], "Require", InputStr);
+                    output = portal.ATPortal(VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
                     if (output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0 && output.IndexOf("FAIL", StringComparison.OrdinalIgnoreCase) <= 0)
                     {
                         retrytime++;
@@ -197,39 +197,67 @@ namespace SFDemo
                     ("check2Retry:" + retryReason).LogForDebug();
                 }
 
-                if (string.Equals(output.Substring(11, 4), "PASS", StringComparison.OrdinalIgnoreCase))
+                ReadWriteToFlexUI.SFReturnToFLEX(output, name);
+
+                if (ReadWriteToFlexUI.CheckContainUncaseString(output, "PASS"))
                 {
-                    if (VarConfig.SFVar["Machine"].Equals("DHA"))
+                    SoundHelper.PlaySound("Check2OK");
+                }
+                else
+                {
+                    SoundHelper.PlaySound("Check2NG");
+                }
+                WriteSFLog(GlobalConfig.CheckLogName[1], e.PropertyName, InputStr, output, retrytime);
+            }
+            catch (Exception ex)
+            {
+                ex.ToString().LogForError();
+                BackgroundProcess(ex.ToString());
+            }
+        }
+
+        private void SFLink1(object sender, PropertyChangedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(SFLink1Trig.Trig)) { return; }
+
+            string name = "Link1";
+            string output = string.Empty;
+            string InputStr = string.Empty;
+            int retrytime = 0;
+            string retryReason = string.Empty;
+            try
+            {
+                Portal portal = new Portal();
+                InputStr = ReadWriteToFlexUI.GetVarFromFLEX(name + "InputStr", name + "Data", name + "TestResult");
+
+                Retry.RetryHandle(GlobalConfig.RetryCount, TimeSpan.FromSeconds(GlobalConfig.RetryInterval), false, delegate
+                {
+                    output = portal.ATPortal(VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
+                    if (output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0 && output.IndexOf("FAIL", StringComparison.OrdinalIgnoreCase) <= 0)
                     {
-                        ReadWriteToFlexUI.DHACheck2Return(output, "OK");
+                        retrytime++;
+                        retryReason = retryReason + "次数" + retrytime + ":" + output + ";";
+                        throw new Exception("SFLink1ReturnErrorMsg");
                     }
-                    else
-                    {
-                        ReadWriteToFlexUI.ReturnMessageToFlexUI(output);
-                    }
+                });
+
+                if (retrytime > 0)
+                {
+                    ("link1Retry:" + retryReason).LogForDebug();
+                }
+
+                ReadWriteToFlexUI.SFReturnToFLEX(output, name);
+
+                if (ReadWriteToFlexUI.CheckContainUncaseString(output, "PASS"))
+                {
                     SoundHelper.PlaySound("Link1OK");
                 }
                 else
                 {
-                    if (VarConfig.SFVar["Machine"].Equals("DHA"))
-                    {
-                        ReadWriteToFlexUI.DHACheck2Return(output, "NG");
-                    }
-                    else
-                    {
-                        ReadWriteToFlexUI.ReturnMessageToFlexUI(output);
-                    }
-
                     SoundHelper.PlaySound("Link1NG");
                 }
-                if (VarConfig.SFVar["Machine"].Equals("DHA"))
-                {
-                    WriteSFLog("TFT", "LinkTFT", e.PropertyName, InputStr, output, retrytime);
-                }
-                else
-                {
-                    WriteSFLog(GlobalConfig.LinkLogName[0], e.PropertyName, InputStr, output, retrytime);
-                }
+
+                WriteSFLog(GlobalConfig.LinkLogName[0], e.PropertyName, InputStr, output, retrytime);
             }
             catch (Exception ex)
             {
@@ -238,96 +266,40 @@ namespace SFDemo
             }
         }
 
-        private void SFlink1(object sender, PropertyChangedEventArgs e)
+        private void SFLink2(object sender, PropertyChangedEventArgs e)
         {
-            if (string.IsNullOrEmpty(SFlink1Trig.Trig)) { return; }
+            if (string.IsNullOrEmpty(SFLink2Trig.Trig)) { return; }
 
+            string name = "Link2";
             string output = string.Empty;
             string InputStr = string.Empty;
             int retrytime = 0;
             string retryReason = string.Empty;
             try
             {
-                InputStr = ReadWriteToFlexUI.GetVarFromFLEX("LinkInputStr", "LinkData", "TestResult");
+                Portal portal = new Portal();
+                InputStr = ReadWriteToFlexUI.GetVarFromFLEX(name + "InputStr", name + "Data", name + "TestResult");
+
                 Retry.RetryHandle(GlobalConfig.RetryCount, TimeSpan.FromSeconds(GlobalConfig.RetryInterval), false, delegate
                 {
-                    //output = ProcedureExecuter.ExecuteNonQuery(LINKProcedureName, SFVar["BU"], SFVar["Station"], "Require", InputStr);
-                    Portal portal = new Portal();
-                    output = portal.ATPortal(VarConfig.SFVar["Station"], "Require", InputStr);
+                    output = portal.ATPortal(VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
                     if (output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0 && output.IndexOf("FAIL", StringComparison.OrdinalIgnoreCase) <= 0)
                     {
                         retrytime++;
                         retryReason = retryReason + "次数" + retrytime + ":" + output + ";";
-                        throw new Exception("SFLinkReturnErrorMsg");
+                        throw new Exception("SFLink2ReturnErrorMsg");
                     }
                 });
 
                 if (retrytime > 0)
                 {
-                    ("linkRetry:" + retryReason).LogForDebug();
+                    ("link2Retry:" + retryReason).LogForDebug();
                 }
 
-                ReadWriteToFlexUI.ReturnMessageToFlexUI(output);
+                ReadWriteToFlexUI.SFReturnToFLEX(output, name);
 
-                if (string.Equals(output.Substring(11, 4), "PASS", StringComparison.OrdinalIgnoreCase))
+                if (ReadWriteToFlexUI.CheckContainUncaseString(output, "PASS"))
                 {
-                    if (VarConfig.SFVar["Machine"].Equals("DHA"))
-                    {
-                        ReadWriteToFlexUI.DHALinkReturn();
-                    }
-                    SoundHelper.PlaySound("Link2OK");
-                }
-                else
-                {
-                    SoundHelper.PlaySound("Link2NG");
-                }
-
-                WriteSFLog(GlobalConfig.LinkLogName[1], e.PropertyName, InputStr, output, retrytime);
-            }
-            catch (Exception ex)
-            {
-                ex.ToString().LogForError();
-                BackgroundProcess(ex.ToString());
-            }
-        }
-
-        private void SFlink2(object sender, PropertyChangedEventArgs e)
-        {
-            if (string.IsNullOrEmpty(SFlink2Trig.Trig)) { return; }
-
-            string output = string.Empty;
-            string InputStr = string.Empty;
-            int retrytime = 0;
-            string retryReason = string.Empty;
-            try
-            {
-                InputStr = ReadWriteToFlexUI.GetVarFromFLEX("LinkInputStr", "LinkData", "TestResult");
-                Retry.RetryHandle(GlobalConfig.RetryCount, TimeSpan.FromSeconds(GlobalConfig.RetryInterval), false, delegate
-                {
-                    //output = ProcedureExecuter.ExecuteNonQuery(LINKProcedureName, SFVar["BU"], SFVar["Station"], "Require", InputStr);
-                    Portal portal = new Portal();
-                    output = portal.ATPortal(VarConfig.SFVar["Station"], "Require", InputStr);
-                    if (output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0 && output.IndexOf("FAIL", StringComparison.OrdinalIgnoreCase) <= 0)
-                    {
-                        retrytime++;
-                        retryReason = retryReason + "次数" + retrytime + ":" + output + ";";
-                        throw new Exception("SFLinkReturnErrorMsg");
-                    }
-                });
-
-                if (retrytime > 0)
-                {
-                    ("linkRetry:" + retryReason).LogForDebug();
-                }
-
-                ReadWriteToFlexUI.ReturnMessageToFlexUI(output);
-
-                if (string.Equals(output.Substring(11, 4), "PASS", StringComparison.OrdinalIgnoreCase))
-                {
-                    if (VarConfig.SFVar["Machine"].Equals("DHA"))
-                    {
-                        ReadWriteToFlexUI.DHALinkReturn();
-                    }
                     SoundHelper.PlaySound("Link2OK");
                 }
                 else
@@ -424,10 +396,10 @@ namespace SFDemo
                 SFtotalSwitch = false;
                 SFswitchbutton.Text = "SF OFF";
                 SFswitchbutton.BackColor = System.Drawing.Color.Red;
-                SFcheck1Trig._Trig = null;
-                SFlink1Trig._Trig = null;
-                SFcheck2Trig._Trig = null;
-                SFlink2Trig._Trig = null;
+                SFCheck1Trig._Trig = null;
+                SFLink1Trig._Trig = null;
+                SFCheck2Trig._Trig = null;
+                SFLink2Trig._Trig = null;
             }
         }
 
@@ -478,5 +450,21 @@ namespace SFDemo
         }
 
         #endregion 存储过程所需文本 拼接
+
+        private void ReCheck1_Click(object sender, EventArgs e)
+        {
+            string InputStr = ReadWriteToFlexUI.GetVarHandleRecheck("Check1InputStr");
+            Portal portal = new Portal();
+            string output = portal.ATPortal(VarConfig.SFVar["Check1Station"], VarConfig.SFVar["Check1Step"], InputStr);
+            BackgroundProcess(output);
+        }
+
+        private void ReCheck2_Click(object sender, EventArgs e)
+        {
+            string InputStr = ReadWriteToFlexUI.GetVarHandleRecheck("Check2InputStr");
+            Portal portal = new Portal();
+            string output = portal.ATPortal(VarConfig.SFVar["Check2Station"], VarConfig.SFVar["Check2Step"], InputStr);
+            BackgroundProcess(output);
+        }
     }
 }
