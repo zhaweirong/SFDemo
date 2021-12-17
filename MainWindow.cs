@@ -21,6 +21,14 @@ namespace SFDemo
         private TrigVar SFLink1Trig = new TrigVar();
         private TrigVar SFLink2Trig = new TrigVar();
 
+        //NEWDHA HARD CODE FOR LINK
+
+        private TrigVar SFLink85Trig = new TrigVar();
+        private TrigVar SFLink95Trig = new TrigVar();
+        private TrigVar SFLink0Trig = new TrigVar();
+        private TrigVar SFLink100Trig = new TrigVar();
+        private TrigVar SFLink200Trig = new TrigVar();
+
         private bool StartPollingTrig = true;
 
         public delegate void DCloseWindow(string pwd);
@@ -44,6 +52,15 @@ namespace SFDemo
             SFCheck2Trig.PropertyChanged += SFCheck2;
             SFLink1Trig.PropertyChanged += SFLink1;
             SFLink2Trig.PropertyChanged += SFLink2;
+
+            if (VarConfig.SFVar["Machine"].Equals("DHA"))
+            {
+                SFLink85Trig.PropertyChanged += HardCodeLink85;
+                SFLink95Trig.PropertyChanged += HardCodeLink95;
+                SFLink0Trig.PropertyChanged += HardCodeLink0;
+                SFLink100Trig.PropertyChanged += HardCodeLink100;
+                SFLink200Trig.PropertyChanged += HardCodeLink200;
+            }
 
             //Check FlexUI OPEN
             CheckFlexUIProcess();
@@ -103,6 +120,16 @@ namespace SFDemo
                             if (VarConfig.checkVarExist("Link2Trig"))
                             {
                                 SFLink2Trig.Trig = Convert.ToString(rundb.GetVarValueEx(VarConfig.SFVar["Link2Trig"]));
+                            }
+
+                            //DHA HARD CODE
+                            if (VarConfig.SFVar["Machine"].Equals("DHA"))
+                            {
+                                SFLink85Trig.Trig = Convert.ToString(rundb.GetVarValueEx("AI.LINK_85S_TRIG"));
+                                SFLink95Trig.Trig = Convert.ToString(rundb.GetVarValueEx("AI.LINK_95S_TRIG"));
+                                SFLink0Trig.Trig = Convert.ToString(rundb.GetVarValueEx("AI.LINK_P0_TRIG"));
+                                SFLink100Trig.Trig = Convert.ToString(rundb.GetVarValueEx("AI.LINK_P100_TRIG"));
+                                SFLink200Trig.Trig = Convert.ToString(rundb.GetVarValueEx("AI.LINK_P200_TRIG"));
                             }
                         }
                     }
@@ -357,6 +384,146 @@ namespace SFDemo
             {
                 ex.ToString().LogForError();
                 BackgroundProcess(ex.ToString());
+            }
+        }
+
+        private void HardCodeLink85(object sender, PropertyChangedEventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(SFLink85Trig.Trig)) { return; }
+                string output = string.Empty;
+                string InputStr = ReadWriteToFlexUI.GetHardCodeLinkInput("VT.LINK_P0_UNIT_SN", "VT.LINK_85S_TFT_SN");
+                if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "ODBC"))
+                {
+                    output = ProcedureExecuter.ExecuteNonQuery(GlobalConfig.ProcedureName, GlobalConfig.BU[0], "CHK85", "Require", InputStr);
+                }
+                else if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "DLL"))
+                {
+                    Portal portal = new Portal();
+                    output = portal.ATPortal("CHK85", "Require", InputStr);
+                }
+                else
+                {
+                    //HTTP
+                }
+
+                WriteSFLog("85S", "Link85s", e.PropertyName, InputStr, output, 0);
+            }
+            catch
+            {
+            }
+        }
+
+        private void HardCodeLink95(object sender, PropertyChangedEventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(SFLink95Trig.Trig)) { return; }
+                string output = string.Empty;
+                string InputStr = ReadWriteToFlexUI.GetHardCodeLinkInput("VT.LINK_P0_UNIT_SN", "VT.LINK_95S_TFT_SN");
+                if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "ODBC"))
+                {
+                    output = ProcedureExecuter.ExecuteNonQuery(GlobalConfig.ProcedureName, GlobalConfig.BU[0], "CHK95", "Require", InputStr);
+                }
+                else if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "DLL"))
+                {
+                    Portal portal = new Portal();
+                    output = portal.ATPortal("CHK95", "Require", InputStr);
+                }
+                else
+                {
+                    //HTTP
+                }
+
+                WriteSFLog("95S", "Link95s", e.PropertyName, InputStr, output, 0);
+            }
+            catch
+            {
+            }
+        }
+
+        private void HardCodeLink0(object sender, PropertyChangedEventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(SFLink0Trig.Trig)) { return; }
+                string output = string.Empty;
+                string InputStr = ReadWriteToFlexUI.GetHardCodeLinkInput("VT.LINK_P0_UNIT_SN", "VT.LINK_P0_TFT_SN");
+                if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "ODBC"))
+                {
+                    output = ProcedureExecuter.ExecuteNonQuery(GlobalConfig.ProcedureName, GlobalConfig.BU[0], "P0", "Require", InputStr);
+                }
+                else if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "DLL"))
+                {
+                    Portal portal = new Portal();
+                    output = portal.ATPortal("P0", "Require", InputStr);
+                }
+                else
+                {
+                    //HTTP
+                }
+
+                WriteSFLog("P0", "LinkP0", e.PropertyName, InputStr, output, 0);
+            }
+            catch
+            {
+            }
+        }
+
+        private void HardCodeLink100(object sender, PropertyChangedEventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(SFLink100Trig.Trig)) { return; }
+                string output = string.Empty;
+                string InputStr = ReadWriteToFlexUI.GetHardCodeLinkInput("VT.LINK_P0_UNIT_SN", "VT.LINK_P0_TFT_SN");
+                if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "ODBC"))
+                {
+                    output = ProcedureExecuter.ExecuteNonQuery(GlobalConfig.ProcedureName, GlobalConfig.BU[0], "P100", "Require", InputStr);
+                }
+                else if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "DLL"))
+                {
+                    Portal portal = new Portal();
+                    output = portal.ATPortal("P100", "Require", InputStr);
+                }
+                else
+                {
+                    //HTTP
+                }
+
+                WriteSFLog("P100", "LinkP100", e.PropertyName, InputStr, output, 0);
+            }
+            catch
+            {
+            }
+        }
+
+        private void HardCodeLink200(object sender, PropertyChangedEventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(SFLink200Trig.Trig)) { return; }
+                string output = string.Empty;
+                string InputStr = ReadWriteToFlexUI.GetHardCodeLinkInput("VT.LINK_P0_UNIT_SN", "VT.LINK_P0_TFT_SN");
+                if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "ODBC"))
+                {
+                    output = ProcedureExecuter.ExecuteNonQuery(GlobalConfig.ProcedureName, GlobalConfig.BU[0], "P200", "Require", InputStr);
+                }
+                else if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "DLL"))
+                {
+                    Portal portal = new Portal();
+                    output = portal.ATPortal("P200", "Require", InputStr);
+                }
+                else
+                {
+                    //HTTP
+                }
+
+                WriteSFLog("P200", "LinkP200", e.PropertyName, InputStr, output, 0);
+            }
+            catch
+            {
             }
         }
 

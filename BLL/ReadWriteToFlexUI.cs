@@ -179,6 +179,20 @@ namespace SFDemo.BLL
             return result;
         }
 
+        public static string GetHardCodeLinkInput(string sn, string data)
+        {
+            string result = string.Empty;
+            FMDMOLib.Rundb rundb = new Rundb();
+            object dbn = rundb.Open();
+            if (Convert.ToInt16(dbn) == 1)
+            {
+                result = "SN=" + rundb.GetVarValueEx(sn) + ";$;line=" + rundb.GetVarValueEx("VT.@LINETYPE") + ";$;Machinenum=" + rundb.GetVarValueEx("VT.@STATION_NAME") + ";$;data=0" + rundb.GetVarValueEx(data) + ";$;TestResult=Fail";
+            }
+            rundb.Close();
+            rundb = null;
+            return result;
+        }
+
         //解析inputstr生成变量键值对
         public static Dictionary<string, string> GetInputStrVar(string inputstr)
         {
