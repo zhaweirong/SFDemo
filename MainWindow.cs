@@ -108,7 +108,7 @@ namespace SFDemo
                     }
                     rundb.Close();
                 }
-            }, "1", 1000, GlobalConfig.trigPollingtime);
+            }, "1", 1000, GlobalConfig.TrigPollingTime);
         }
 
         #endregion 数据定时获取
@@ -131,7 +131,18 @@ namespace SFDemo
 
                 Retry.RetryHandle(GlobalConfig.RetryCount, TimeSpan.FromSeconds(GlobalConfig.RetryInterval), false, delegate
                 {
-                    output = portal.ATPortal(VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
+                    if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "ODBC"))
+                    {
+                        output = ProcedureExecuter.ExecuteNonQuery(GlobalConfig.ProcedureName, GlobalConfig.BU[0], VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
+                    }
+                    else if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "DLL"))
+                    {
+                        output = portal.ATPortal(VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
+                    }
+                    else
+                    {
+                        //HTTP
+                    }
 
                     if ((output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0))
                     {
@@ -183,7 +194,18 @@ namespace SFDemo
 
                 Retry.RetryHandle(GlobalConfig.RetryCount, TimeSpan.FromSeconds(GlobalConfig.RetryInterval), false, delegate
                 {
-                    output = portal.ATPortal(VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
+                    if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "ODBC"))
+                    {
+                        output = ProcedureExecuter.ExecuteNonQuery(GlobalConfig.ProcedureName, GlobalConfig.BU[1], VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
+                    }
+                    else if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "DLL"))
+                    {
+                        output = portal.ATPortal(VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
+                    }
+                    else
+                    {
+                        //HTTP
+                    }
                     if ((output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0))
                     {
                         retrytime++;
@@ -232,7 +254,18 @@ namespace SFDemo
 
                 Retry.RetryHandle(GlobalConfig.RetryCount, TimeSpan.FromSeconds(GlobalConfig.RetryInterval), false, delegate
                 {
-                    output = portal.ATPortal(VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
+                    if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "ODBC"))
+                    {
+                        output = ProcedureExecuter.ExecuteNonQuery(GlobalConfig.ProcedureName, GlobalConfig.BU[2], VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
+                    }
+                    else if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "DLL"))
+                    {
+                        output = portal.ATPortal(VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
+                    }
+                    else
+                    {
+                        //HTTP
+                    }
                     if (output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0 && output.IndexOf("FAIL", StringComparison.OrdinalIgnoreCase) <= 0)
                     {
                         retrytime++;
@@ -282,7 +315,18 @@ namespace SFDemo
 
                 Retry.RetryHandle(GlobalConfig.RetryCount, TimeSpan.FromSeconds(GlobalConfig.RetryInterval), false, delegate
                 {
-                    output = portal.ATPortal(VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
+                    if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "ODBC"))
+                    {
+                        output = ProcedureExecuter.ExecuteNonQuery(GlobalConfig.ProcedureName, GlobalConfig.BU[3], VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
+                    }
+                    else if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "DLL"))
+                    {
+                        output = portal.ATPortal(VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
+                    }
+                    else
+                    {
+                        //HTTP
+                    }
                     if (output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0 && output.IndexOf("FAIL", StringComparison.OrdinalIgnoreCase) <= 0)
                     {
                         retrytime++;
@@ -429,7 +473,7 @@ namespace SFDemo
 
         #endregion 界面切换
 
-        #region 存储过程所需文本 拼接
+        #region 写SFlog
 
         public void WriteSFLog(string SFtype, string trignum, string SFinput, string SFoutput, int retrytime)
         {
@@ -449,22 +493,51 @@ namespace SFDemo
             BackgroundProcess(logstr);
         }
 
-        #endregion 存储过程所需文本 拼接
+        #endregion 写SFlog
+
+        #region RECHECK
 
         private void ReCheck1_Click(object sender, EventArgs e)
         {
             string InputStr = ReadWriteToFlexUI.GetVarHandleRecheck("Check1InputStr");
-            Portal portal = new Portal();
-            string output = portal.ATPortal(VarConfig.SFVar["Check1Station"], VarConfig.SFVar["Check1Step"], InputStr);
+            string output = string.Empty;
+            if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "ODBC"))
+            {
+                output = ProcedureExecuter.ExecuteNonQuery(GlobalConfig.ProcedureName, GlobalConfig.BU[0], VarConfig.SFVar["Check1Station"], VarConfig.SFVar["Check1Step"], InputStr);
+            }
+            else if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "DLL"))
+            {
+                Portal portal = new Portal();
+                output = portal.ATPortal(VarConfig.SFVar["Check1Station"], VarConfig.SFVar["Check1Step"], InputStr);
+            }
+            else
+            {
+                //HTTP
+            }
+
             BackgroundProcess(output);
         }
 
         private void ReCheck2_Click(object sender, EventArgs e)
         {
             string InputStr = ReadWriteToFlexUI.GetVarHandleRecheck("Check2InputStr");
-            Portal portal = new Portal();
-            string output = portal.ATPortal(VarConfig.SFVar["Check2Station"], VarConfig.SFVar["Check2Step"], InputStr);
+            string output = string.Empty;
+            if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "ODBC"))
+            {
+                output = ProcedureExecuter.ExecuteNonQuery(GlobalConfig.ProcedureName, GlobalConfig.BU[1], VarConfig.SFVar["Check2Station"], VarConfig.SFVar["Check2Step"], InputStr);
+            }
+            else if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "DLL"))
+            {
+                Portal portal = new Portal();
+                output = portal.ATPortal(VarConfig.SFVar["Check2Station"], VarConfig.SFVar["Check2Step"], InputStr);
+            }
+            else
+            {
+                //HTTP
+            }
             BackgroundProcess(output);
         }
+
+        #endregion RECHECK
     }
 }

@@ -12,18 +12,20 @@ namespace SFDemo.BLL
     {
         public static readonly string folderPath = GetAppsettingStr("Path");
         public static readonly string SFWAY = GetAppsettingStr("SFWAY");
-        public static readonly int trigPollingtime = int.Parse(GetAppsettingStr("TrigPollingTime"));
+        public static readonly string ProcedureName = GetAppsettingStr("ProcedureName");
+        public static readonly int TrigPollingTime = int.Parse(GetAppsettingStr("TrigPollingTime"));
 
         public static readonly int RetryCount = int.Parse(GetAppsettingStr("RetryCount"));
         public static readonly double RetryInterval = (double.Parse(GetAppsettingStr("RetryInterval"))) / 1000;
 
         public static readonly string[] CheckLogName = GetAppsettingStr("CheckLogName").Split(',');
         public static readonly string[] LinkLogName = GetAppsettingStr("LinkLogName").Split(',');
+        public static readonly string[] BU = GetAppsettingStr("BU").Split(',');
 
         public static string GetAppsettingStr(string str)
         {
             AppSettingsReader appReader = new AppSettingsReader();
-            return appReader.GetValue(str, typeof(string)).ToString();
+            return appReader.GetValue(str, typeof(string)).ToString().Trim();
         }
     }
 }

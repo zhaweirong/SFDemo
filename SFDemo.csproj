@@ -123,6 +123,11 @@
     <Compile Include="BLL\VarConfig.cs" />
     <Compile Include="Model\checkModel.cs" />
     <Compile Include="Model\linkModel.cs" />
+    <Compile Include="DBUtil\Command.cs" />
+    <Compile Include="DBUtil\Connection.cs" />
+    <Compile Include="DBUtil\CurrentContext.cs" />
+    <Compile Include="DBUtil\ProcedureExecuter.cs" />
+    <Compile Include="DBUtil\ResultReader.cs" />
     <Compile Include="Util\FileUtilHelper.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
