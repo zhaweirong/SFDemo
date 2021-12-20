@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -12,13 +14,10 @@ namespace SFDemo
         [STAThread]
         private static void Main()
         {
-            bool isAppRunning = false;
-            Mutex mutex = new Mutex(true, System.Diagnostics.Process.GetCurrentProcess().ProcessName, out isAppRunning);
+            String thisprocessname = Process.GetCurrentProcess().ProcessName;
 
-            if (!isAppRunning)
-            {
-                Environment.Exit(1);
-            }
+            if (Process.GetProcesses().Count(p => p.ProcessName == thisprocessname) > 1)
+                return;
 
             //处理未捕获的异常
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);

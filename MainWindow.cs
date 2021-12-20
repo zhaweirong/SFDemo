@@ -153,7 +153,6 @@ namespace SFDemo
             string retryReason = string.Empty;
             try
             {
-                Portal portal = new Portal();
                 InputStr = ReadWriteToFlexUI.GetVarFromFLEX(name + "InputStr");
 
                 Retry.RetryHandle(GlobalConfig.RetryCount, TimeSpan.FromSeconds(GlobalConfig.RetryInterval), false, delegate
@@ -164,6 +163,7 @@ namespace SFDemo
                     }
                     else if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "DLL"))
                     {
+                        Portal portal = new Portal();
                         output = portal.ATPortal(VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
                     }
                     else
@@ -171,7 +171,7 @@ namespace SFDemo
                         //HTTP
                     }
 
-                    if ((output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0))
+                    if (GlobalConfig.RetryCount != 0 && (output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0))
                     {
                         retrytime++;
                         retryReason = retryReason + "次数" + retrytime + ":" + output + ";";
@@ -216,7 +216,6 @@ namespace SFDemo
             string retryReason = string.Empty;
             try
             {
-                Portal portal = new Portal();
                 InputStr = ReadWriteToFlexUI.GetVarFromFLEX(name + "InputStr");
 
                 Retry.RetryHandle(GlobalConfig.RetryCount, TimeSpan.FromSeconds(GlobalConfig.RetryInterval), false, delegate
@@ -227,13 +226,14 @@ namespace SFDemo
                     }
                     else if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "DLL"))
                     {
+                        Portal portal = new Portal();
                         output = portal.ATPortal(VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
                     }
                     else
                     {
                         //HTTP
                     }
-                    if ((output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0))
+                    if (GlobalConfig.RetryCount != 0 && (output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0))
                     {
                         retrytime++;
                         retryReason = retryReason + "次数" + retrytime + ":" + output + ";";
@@ -276,7 +276,6 @@ namespace SFDemo
             string retryReason = string.Empty;
             try
             {
-                Portal portal = new Portal();
                 InputStr = ReadWriteToFlexUI.GetVarFromFLEX(name + "InputStr", name + "Data", name + "TestResult");
 
                 Retry.RetryHandle(GlobalConfig.RetryCount, TimeSpan.FromSeconds(GlobalConfig.RetryInterval), false, delegate
@@ -287,13 +286,14 @@ namespace SFDemo
                     }
                     else if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "DLL"))
                     {
+                        Portal portal = new Portal();
                         output = portal.ATPortal(VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
                     }
                     else
                     {
                         //HTTP
                     }
-                    if (output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0 && output.IndexOf("FAIL", StringComparison.OrdinalIgnoreCase) <= 0)
+                    if (GlobalConfig.RetryCount != 0 && output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0 && output.IndexOf("FAIL", StringComparison.OrdinalIgnoreCase) <= 0)
                     {
                         retrytime++;
                         retryReason = retryReason + "次数" + retrytime + ":" + output + ";";
@@ -337,7 +337,6 @@ namespace SFDemo
             string retryReason = string.Empty;
             try
             {
-                Portal portal = new Portal();
                 InputStr = ReadWriteToFlexUI.GetVarFromFLEX(name + "InputStr", name + "Data", name + "TestResult");
 
                 Retry.RetryHandle(GlobalConfig.RetryCount, TimeSpan.FromSeconds(GlobalConfig.RetryInterval), false, delegate
@@ -348,13 +347,14 @@ namespace SFDemo
                     }
                     else if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "DLL"))
                     {
+                        Portal portal = new Portal();
                         output = portal.ATPortal(VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
                     }
                     else
                     {
                         //HTTP
                     }
-                    if (output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0 && output.IndexOf("FAIL", StringComparison.OrdinalIgnoreCase) <= 0)
+                    if (GlobalConfig.RetryCount != 0 && output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0 && output.IndexOf("FAIL", StringComparison.OrdinalIgnoreCase) <= 0)
                     {
                         retrytime++;
                         retryReason = retryReason + "次数" + retrytime + ":" + output + ";";
