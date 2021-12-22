@@ -132,11 +132,11 @@ namespace SFDemo.BLL
                             else
                             {
                                 string tempstr = Convert.ToString(rundb.GetVarValueEx(testResult));
-                                if (tempstr.Equals("0"))
+                                if (tempstr.Equals("1"))
                                 {
                                     result = result + "TestResult=PASS" + spiltxt;
                                 }
-                                else if (tempstr.Equals("1"))
+                                else if (tempstr.Equals("0"))
                                 {
                                     result = result + "TestResult=Fail" + spiltxt;
                                 }
