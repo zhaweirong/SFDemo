@@ -97,11 +97,25 @@ namespace SFDemo.BLL
                                 {
                                     if (temp == LinkDataPairs.Count)
                                     {
-                                        result = result + Convert.ToString(rundb.GetVarValueEx(enumeratorlink.Current.Key));
+                                        if (VarConfig.SFVar["Machine"].Equals("PI2"))
+                                        {
+                                            result = result + pi2OKNGTransfer(Convert.ToString(rundb.GetVarValueEx(enumeratorlink.Current.Key)));
+                                        }
+                                        else
+                                        {
+                                            result = result + Convert.ToString(rundb.GetVarValueEx(enumeratorlink.Current.Key));
+                                        }
                                     }
                                     else
                                     {
-                                        result = result + Convert.ToString(rundb.GetVarValueEx(enumeratorlink.Current.Key)) + @"\";
+                                        if (VarConfig.SFVar["Machine"].Equals("PI2"))
+                                        {
+                                            result = result + pi2OKNGTransfer(Convert.ToString(rundb.GetVarValueEx(enumeratorlink.Current.Key))) + @"\";
+                                        }
+                                        else
+                                        {
+                                            result = result + Convert.ToString(rundb.GetVarValueEx(enumeratorlink.Current.Key)) + @"\";
+                                        }
                                     }
                                 }
                                 else
@@ -217,6 +231,18 @@ namespace SFDemo.BLL
         public static bool CheckContainUncaseString(string str, string value)
         {
             return str.IndexOf(value, StringComparison.OrdinalIgnoreCase) >= 0;
+        }
+
+        public static string pi2OKNGTransfer(string str)
+        {
+            if (str.Equals("0"))
+            {
+                return "OK";
+            }
+            else
+            {
+                return "NG";
+            }
         }
     }
 }
