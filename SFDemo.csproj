@@ -99,9 +99,9 @@
     <Reference Include="Lin.LogHelper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Lin.LogHelper.0.0.3\lib\net46\Lin.LogHelper.dll</HintPath>
     </Reference>
-    <Reference Include="SFSPortal, Version=1.1.0.0, Culture=neutral, processorArchitecture=AMD64">
+    <Reference Include="SFSPortal, Version=1.1.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Desktop\QSMC_SF\32位 dll\32位 dll\SFSPortal.dll</HintPath>
+      <HintPath>..\..\..\Desktop\SFSPortal(anyCPU)\SFSPortal.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
