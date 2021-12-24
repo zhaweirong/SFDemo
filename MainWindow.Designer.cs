@@ -29,6 +29,7 @@ namespace SFDemo
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.SFPanel = new System.Windows.Forms.Panel();
             this.SFlistBox = new System.Windows.Forms.ListBox();
@@ -39,6 +40,7 @@ namespace SFDemo
             this.HiveButton = new System.Windows.Forms.Button();
             this.SFButton = new System.Windows.Forms.Button();
             this.HeadPanel = new System.Windows.Forms.Panel();
+            this.SFswitchbutton = new System.Windows.Forms.Button();
             this.FlexUIStatus = new System.Windows.Forms.Label();
             this.currentPaneltext = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -46,7 +48,7 @@ namespace SFDemo
             this.ReCheck2 = new System.Windows.Forms.Button();
             this.ReCheck1 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.SFswitchbutton = new System.Windows.Forms.Button();
+            this.showTaskbar = new System.Windows.Forms.NotifyIcon(this.components);
             this.SFPanel.SuspendLayout();
             this.HivePanel.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -165,6 +167,22 @@ namespace SFDemo
             this.HeadPanel.Size = new System.Drawing.Size(790, 40);
             this.HeadPanel.TabIndex = 4;
             // 
+            // SFswitchbutton
+            // 
+            this.SFswitchbutton.AutoSize = true;
+            this.SFswitchbutton.BackColor = System.Drawing.Color.LimeGreen;
+            this.SFswitchbutton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.SFswitchbutton.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F);
+            this.SFswitchbutton.Location = new System.Drawing.Point(606, 2);
+            this.SFswitchbutton.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.SFswitchbutton.Name = "SFswitchbutton";
+            this.SFswitchbutton.Size = new System.Drawing.Size(92, 38);
+            this.SFswitchbutton.TabIndex = 5;
+            this.SFswitchbutton.Text = "SF ON ";
+            this.SFswitchbutton.UseVisualStyleBackColor = false;
+            this.SFswitchbutton.Visible = false;
+            this.SFswitchbutton.Click += new System.EventHandler(this.SFswitchbutton_Click);
+            // 
             // FlexUIStatus
             // 
             this.FlexUIStatus.BackColor = System.Drawing.Color.LimeGreen;
@@ -237,21 +255,12 @@ namespace SFDemo
             this.label1.Text = "手动Check";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // SFswitchbutton
+            // showTaskbar
             // 
-            this.SFswitchbutton.AutoSize = true;
-            this.SFswitchbutton.BackColor = System.Drawing.Color.LimeGreen;
-            this.SFswitchbutton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.SFswitchbutton.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F);
-            this.SFswitchbutton.Location = new System.Drawing.Point(606, 2);
-            this.SFswitchbutton.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.SFswitchbutton.Name = "SFswitchbutton";
-            this.SFswitchbutton.Size = new System.Drawing.Size(92, 38);
-            this.SFswitchbutton.TabIndex = 5;
-            this.SFswitchbutton.Text = "SF ON ";
-            this.SFswitchbutton.UseVisualStyleBackColor = false;
-            this.SFswitchbutton.Visible = false;
-            this.SFswitchbutton.Click += new System.EventHandler(this.SFswitchbutton_Click);
+            this.showTaskbar.Icon = ((System.Drawing.Icon)(resources.GetObject("showTaskbar.Icon")));
+            this.showTaskbar.Text = "ABB_SF";
+            this.showTaskbar.Visible = true;
+            this.showTaskbar.Click += new System.EventHandler(this.showTaskbar_Click);
             // 
             // MainWindow
             // 
@@ -299,6 +308,7 @@ namespace SFDemo
         private System.Windows.Forms.Button ReCheck1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button SFswitchbutton;
+        private System.Windows.Forms.NotifyIcon showTaskbar;
     }
 }
 

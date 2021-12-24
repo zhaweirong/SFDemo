@@ -559,6 +559,7 @@ namespace SFDemo
             SFButton.BackColor = System.Drawing.Color.LightGray;
             HiveButton.BackColor = System.Drawing.Color.White;
             SettingButton.BackColor = System.Drawing.Color.White;
+            this.ShowInTaskbar = false;
         }
 
         private void SFButton_Click(object sender, EventArgs e)
@@ -706,5 +707,21 @@ namespace SFDemo
         }
 
         #endregion RECHECK
+
+        private void showTaskbar_Click(object sender, EventArgs e)
+        {
+            //点击时判断form是否显示,显示就隐藏,隐藏就显示
+            if (this.WindowState == FormWindowState.Normal)
+            {
+                this.WindowState = FormWindowState.Minimized;
+                this.Hide();
+            }
+            else if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.Show();
+                this.WindowState = FormWindowState.Normal;
+                this.Activate();
+            }
+        }
     }
 }
