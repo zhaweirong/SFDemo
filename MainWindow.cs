@@ -555,7 +555,7 @@ namespace SFDemo
             SFPanel.Visible = true;
             HivePanel.Visible = false;
             SettingPanel.Visible = false;
-            currentPaneltext.Text = "SF";
+            currentPaneltext.Text = "SF_" + GlobalConfig.SFWAY;
             SFButton.BackColor = System.Drawing.Color.LightGray;
             HiveButton.BackColor = System.Drawing.Color.White;
             SettingButton.BackColor = System.Drawing.Color.White;
@@ -567,7 +567,7 @@ namespace SFDemo
             SFPanel.Visible = true;
             HivePanel.Visible = false;
             SettingPanel.Visible = false;
-            currentPaneltext.Text = "SF";
+            currentPaneltext.Text = "SF_" + GlobalConfig.SFWAY;
             SFButton.BackColor = System.Drawing.Color.LightGray;
             HiveButton.BackColor = System.Drawing.Color.White;
             SettingButton.BackColor = System.Drawing.Color.White;
