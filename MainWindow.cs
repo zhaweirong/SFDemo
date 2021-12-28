@@ -2,6 +2,7 @@
 using Ini.Net;
 using Lin.LogHelper;
 using SFDemo.BLL;
+using SFDemo.UIL;
 using SFSATPortal;
 using System;
 using System.Collections.Generic;
@@ -554,11 +555,9 @@ namespace SFDemo
         {
             SFPanel.Visible = true;
             HivePanel.Visible = false;
-            SettingPanel.Visible = false;
             currentPaneltext.Text = "SF_" + GlobalConfig.SFWAY;
             SFButton.BackColor = System.Drawing.Color.LightGray;
             HiveButton.BackColor = System.Drawing.Color.White;
-            SettingButton.BackColor = System.Drawing.Color.White;
             this.ShowInTaskbar = false;
         }
 
@@ -566,31 +565,25 @@ namespace SFDemo
         {
             SFPanel.Visible = true;
             HivePanel.Visible = false;
-            SettingPanel.Visible = false;
             currentPaneltext.Text = "SF_" + GlobalConfig.SFWAY;
             SFButton.BackColor = System.Drawing.Color.LightGray;
             HiveButton.BackColor = System.Drawing.Color.White;
-            SettingButton.BackColor = System.Drawing.Color.White;
         }
 
         private void HiveButton_Click(object sender, EventArgs e)
         {
             HivePanel.Visible = true;
             SFPanel.Visible = false;
-            SettingPanel.Visible = false;
             currentPaneltext.Text = "Hive";
             HiveButton.BackColor = System.Drawing.Color.LightGray;
             SFButton.BackColor = System.Drawing.Color.White;
-            SettingButton.BackColor = System.Drawing.Color.White;
         }
 
         private void SettingButton_Click(object sender, EventArgs e)
         {
             HivePanel.Visible = false;
             SFPanel.Visible = false;
-            SettingPanel.Visible = true;
             currentPaneltext.Text = "Setting";
-            SettingButton.BackColor = System.Drawing.Color.LightGray;
             HiveButton.BackColor = System.Drawing.Color.White;
             SFButton.BackColor = System.Drawing.Color.White;
         }
@@ -639,6 +632,18 @@ namespace SFDemo
             }
         }
 
+        private void ManualWindow_Click(object sender, EventArgs e)
+        {
+            if (FileUtilHelper.CheckIfUncaseString(VarConfig.SFVar["Machine"], "BATTERY") && GlobalConfig.SFWAY != "HTTP")
+            {
+                ManualCheck manual = new ManualCheck
+                {
+                    StartPosition = FormStartPosition.CenterParent
+                };
+                manual.ShowDialog();
+            }
+        }
+
         #endregion 界面切换
 
         #region 写SFlog
@@ -663,50 +668,7 @@ namespace SFDemo
 
         #endregion 写SFlog
 
-        #region RECHECK
-
-        private void ReCheck1_Click(object sender, EventArgs e)
-        {
-            string InputStr = ReadWriteToFlexUI.GetVarHandleRecheck("Check1InputStr");
-            string output = string.Empty;
-            if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "ODBC"))
-            {
-                output = ProcedureExecuter.ExecuteNonQuery(GlobalConfig.ProcedureName, GlobalConfig.BU[0], VarConfig.SFVar["Check1Station"], VarConfig.SFVar["Check1Step"], InputStr);
-            }
-            else if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "DLL"))
-            {
-                Portal portal = new Portal();
-                output = portal.ATPortal(VarConfig.SFVar["Check1Station"], VarConfig.SFVar["Check1Step"], InputStr);
-            }
-            else
-            {
-                //HTTP
-            }
-
-            BackgroundProcess(output);
-        }
-
-        private void ReCheck2_Click(object sender, EventArgs e)
-        {
-            string InputStr = ReadWriteToFlexUI.GetVarHandleRecheck("Check2InputStr");
-            string output = string.Empty;
-            if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "ODBC"))
-            {
-                output = ProcedureExecuter.ExecuteNonQuery(GlobalConfig.ProcedureName, GlobalConfig.BU[1], VarConfig.SFVar["Check2Station"], VarConfig.SFVar["Check2Step"], InputStr);
-            }
-            else if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "DLL"))
-            {
-                Portal portal = new Portal();
-                output = portal.ATPortal(VarConfig.SFVar["Check2Station"], VarConfig.SFVar["Check2Step"], InputStr);
-            }
-            else
-            {
-                //HTTP
-            }
-            BackgroundProcess(output);
-        }
-
-        #endregion RECHECK
+        #region TASKBAR
 
         private void showTaskbar_Click(object sender, EventArgs e)
         {
@@ -723,5 +685,7 @@ namespace SFDemo
                 this.Activate();
             }
         }
+
+        #endregion TASKBAR
     }
 }
