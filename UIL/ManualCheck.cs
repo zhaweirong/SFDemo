@@ -20,6 +20,7 @@ namespace SFDemo.UIL
         public ManualCheck()
         {
             InitializeComponent();
+            this.Linetext.Text = GetLine();
         }
 
         private void buttoncheck1_Click(object sender, EventArgs e)
@@ -40,6 +41,7 @@ namespace SFDemo.UIL
             }
 
             richTextBox1.Text = name + ":" + output;
+            WriteSFLog(GlobalConfig.CheckLogName[0], InputStr, output);
         }
 
         private string GetLine()
@@ -75,6 +77,7 @@ namespace SFDemo.UIL
             }
 
             richTextBox1.Text = name + ":" + output;
+            WriteSFLog(GlobalConfig.CheckLogName[1], InputStr, output);
         }
 
         private void buttonlink1_Click(object sender, EventArgs e)
@@ -95,6 +98,15 @@ namespace SFDemo.UIL
             }
 
             richTextBox1.Text = name + ":" + output;
+            WriteSFLog(GlobalConfig.CheckLogName[2], InputStr, output);
+        }
+
+        public void WriteSFLog(string SFtype, string SFinput, string SFoutput)
+        {
+            string floder = GlobalConfig.folderPath + DateTime.Now.ToString("yyyy-MM-dd") + "_Battery.txt";
+            string logstr = FileUtilHelper.GetLogString(SFtype, DateTime.Now.ToLongTimeString().ToString(), SFinput + "SFreturn:" + SFoutput, "\r\n");
+
+            FileUtilHelper.AppendText(floder, logstr);
         }
     }
 }
