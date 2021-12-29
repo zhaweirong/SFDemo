@@ -173,7 +173,10 @@ namespace SFDemo.UIL
             this.Controls.Add(this.ColorText);
             this.Controls.Add(this.BTText);
             this.Controls.Add(this.TCText);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "ManualCheck";
+            this.ShowInTaskbar = false;
             this.Text = "ManualCheck";
             this.ResumeLayout(false);
             this.PerformLayout();
