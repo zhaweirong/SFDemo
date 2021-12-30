@@ -20,7 +20,7 @@ namespace SFDemo.UIL
         public ManualCheck()
         {
             InitializeComponent();
-            this.Linetext.Text = GetLine();
+            this.Linetext.Text = GetVar("VT.手动过站线别/K");
         }
 
         private void buttoncheck1_Click(object sender, EventArgs e)
@@ -53,6 +53,21 @@ namespace SFDemo.UIL
             if (Convert.ToInt16(dbn) == 1)
             {
                 result = rundb.GetVarValueEx("VT.LINE/K");
+            }
+            rundb.Close();
+            rundb = null;
+            return result;
+        }
+
+        private string GetVar(string str)
+        {
+            string result = string.Empty;
+
+            FMDMOLib.Rundb rundb = new Rundb();
+            object dbn = rundb.Open();
+            if (Convert.ToInt16(dbn) == 1)
+            {
+                result = rundb.GetVarValueEx(str);
             }
             rundb.Close();
             rundb = null;
