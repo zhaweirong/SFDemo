@@ -93,9 +93,6 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ini.Net, Version=1.0.5531.18665, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\ini.net.1.1.0\lib\net20\Ini.Net.dll</HintPath>
-    </Reference>
     <Reference Include="Lin.LogHelper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Lin.LogHelper.0.0.3\lib\net46\Lin.LogHelper.dll</HintPath>
     </Reference>
@@ -149,6 +146,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BLL\Retry.cs" />
+    <Compile Include="Util\iniHelper.cs" />
     <Compile Include="Util\SoundHelper.cs" />
     <Compile Include="BLL\TrigVar.cs" />
     <EmbeddedResource Include="MainWindow.resx">
