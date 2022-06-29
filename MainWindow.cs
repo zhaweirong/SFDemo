@@ -172,7 +172,7 @@ namespace SFDemo
                         //HTTP
                     }
 
-                    if (GlobalConfig.RetryCount != 0 && (output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0))
+                    if (GlobalConfig.RetryCount != 0 && (output.IndexOf("Result=PASS", StringComparison.OrdinalIgnoreCase) <= 0))
                     {
                         retrytime++;
                         retryReason = retryReason + "次数" + retrytime + ":" + output + ";";
@@ -188,7 +188,7 @@ namespace SFDemo
 
                 ReadWriteToFlexUI.SFReturnToFLEX(output, name);
 
-                if (ReadWriteToFlexUI.CheckContainUncaseString(output, "PASS"))
+                if (ReadWriteToFlexUI.CheckContainUncaseString(output, "Result=PASS"))
                 {
                     SoundHelper.PlaySound("Check1OK");
                 }
@@ -234,7 +234,7 @@ namespace SFDemo
                     {
                         //HTTP
                     }
-                    if (GlobalConfig.RetryCount != 0 && (output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0))
+                    if (GlobalConfig.RetryCount != 0 && (output.IndexOf("Result=PASS", StringComparison.OrdinalIgnoreCase) <= 0))
                     {
                         retrytime++;
                         retryReason = retryReason + "次数" + retrytime + ":" + output + ";";
@@ -249,7 +249,7 @@ namespace SFDemo
 
                 ReadWriteToFlexUI.SFReturnToFLEX(output, name);
 
-                if (ReadWriteToFlexUI.CheckContainUncaseString(output, "PASS"))
+                if (ReadWriteToFlexUI.CheckContainUncaseString(output, "Result=PASS"))
                 {
                     SoundHelper.PlaySound("Check2OK");
                 }
@@ -294,7 +294,7 @@ namespace SFDemo
                     {
                         //HTTP
                     }
-                    if (GlobalConfig.RetryCount != 0 && output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0 && output.IndexOf("FAIL", StringComparison.OrdinalIgnoreCase) <= 0)
+                    if (GlobalConfig.RetryCount != 0 && output.IndexOf("Result=PASS", StringComparison.OrdinalIgnoreCase) <= 0 && output.IndexOf("Result=FAIL", StringComparison.OrdinalIgnoreCase) <= 0)
                     {
                         retrytime++;
                         retryReason = retryReason + "次数" + retrytime + ":" + output + ";";
@@ -309,7 +309,7 @@ namespace SFDemo
 
                 ReadWriteToFlexUI.SFReturnToFLEX(output, name);
 
-                if (ReadWriteToFlexUI.CheckContainUncaseString(output, "PASS"))
+                if (ReadWriteToFlexUI.CheckContainUncaseString(output, "Result=PASS"))
                 {
                     SoundHelper.PlaySound("Link1OK");
                 }
@@ -355,7 +355,7 @@ namespace SFDemo
                     {
                         //HTTP
                     }
-                    if (GlobalConfig.RetryCount != 0 && output.IndexOf("PASS", StringComparison.OrdinalIgnoreCase) <= 0 && output.IndexOf("FAIL", StringComparison.OrdinalIgnoreCase) <= 0)
+                    if (GlobalConfig.RetryCount != 0 && output.IndexOf("Result=PASS", StringComparison.OrdinalIgnoreCase) <= 0 && output.IndexOf("Result=FAIL", StringComparison.OrdinalIgnoreCase) <= 0)
                     {
                         retrytime++;
                         retryReason = retryReason + "次数" + retrytime + ":" + output + ";";
@@ -370,7 +370,7 @@ namespace SFDemo
 
                 ReadWriteToFlexUI.SFReturnToFLEX(output, name);
 
-                if (ReadWriteToFlexUI.CheckContainUncaseString(output, "PASS"))
+                if (ReadWriteToFlexUI.CheckContainUncaseString(output, "Result=PASS"))
                 {
                     SoundHelper.PlaySound("Link2OK");
                 }

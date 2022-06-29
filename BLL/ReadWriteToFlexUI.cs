@@ -21,7 +21,7 @@ namespace SFDemo.BLL
 
                 if (VarConfig.checkVarExist(name + "ReturnOK"))
                 {
-                    if (CheckContainUncaseString(result, "PASS"))
+                    if (CheckContainUncaseString(result, "Result=PASS"))
                     {
                         rundb.SetVarValueEx(VarConfig.SFVar[name + "ReturnOK"], 1);
                     }
@@ -32,7 +32,7 @@ namespace SFDemo.BLL
                 }
                 if (VarConfig.checkVarExist(name + "ReturnNG"))
                 {
-                    if (CheckContainUncaseString(result, "PASS"))
+                    if (CheckContainUncaseString(result, "Result=PASS"))
                     {
                         rundb.SetVarValueEx(VarConfig.SFVar[name + "ReturnNG"], 0);
                     }
