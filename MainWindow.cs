@@ -156,11 +156,20 @@ namespace SFDemo
             {
                 InputStr = ReadWriteToFlexUI.GetVarFromFLEX(name + "InputStr");
 
-                Retry.RetryHandle(GlobalConfig.RetryCount, TimeSpan.FromSeconds(GlobalConfig.RetryInterval), false, delegate
+                Retry.RetryHandle(int.Parse(VarConfig.SFVar[name + "RetryCount"]), TimeSpan.FromMilliseconds(int.Parse(VarConfig.SFVar[name + "RetryInterval"])), false, delegate
                 {
                     if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "ODBC"))
                     {
-                        output = ProcedureExecuter.ExecuteNonQuery(GlobalConfig.ProcedureName, GlobalConfig.BU[0], VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
+                        try
+                        {
+                            output = ProcedureExecuter.ExecuteNonQuery(GlobalConfig.ProcedureName, GlobalConfig.BU[0], VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
+                        }
+                        catch (Exception ex)
+                        {
+                            retrytime++;
+                            retryReason = retryReason + "次数" + retrytime + ":" + "ExecuteProcedureFail";
+                            throw new Exception("ExecuteProcedureFail");
+                        }
                     }
                     else if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "DLL"))
                     {
@@ -172,7 +181,7 @@ namespace SFDemo
                         //HTTP
                     }
 
-                    if (GlobalConfig.RetryCount != 0 && (output.IndexOf("Result=PASS", StringComparison.OrdinalIgnoreCase) <= 0))
+                    if (int.Parse(VarConfig.SFVar[name + "RetryCount"]) > 0 && (output.IndexOf("Result=PASS", StringComparison.OrdinalIgnoreCase) <= 0))
                     {
                         retrytime++;
                         retryReason = retryReason + "次数" + retrytime + ":" + output + ";";
@@ -219,11 +228,20 @@ namespace SFDemo
             {
                 InputStr = ReadWriteToFlexUI.GetVarFromFLEX(name + "InputStr");
 
-                Retry.RetryHandle(GlobalConfig.RetryCount, TimeSpan.FromSeconds(GlobalConfig.RetryInterval), false, delegate
+                Retry.RetryHandle(int.Parse(VarConfig.SFVar[name + "RetryCount"]), TimeSpan.FromMilliseconds(int.Parse(VarConfig.SFVar[name + "RetryInterval"])), false, delegate
                 {
                     if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "ODBC"))
                     {
-                        output = ProcedureExecuter.ExecuteNonQuery(GlobalConfig.ProcedureName, GlobalConfig.BU[1], VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
+                        try
+                        {
+                            output = ProcedureExecuter.ExecuteNonQuery(GlobalConfig.ProcedureName, GlobalConfig.BU[1], VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
+                        }
+                        catch (Exception ex)
+                        {
+                            retrytime++;
+                            retryReason = retryReason + "次数" + retrytime + ":" + "ExecuteProcedureFail";
+                            throw new Exception("ExecuteProcedureFail");
+                        }
                     }
                     else if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "DLL"))
                     {
@@ -234,7 +252,7 @@ namespace SFDemo
                     {
                         //HTTP
                     }
-                    if (GlobalConfig.RetryCount != 0 && (output.IndexOf("Result=PASS", StringComparison.OrdinalIgnoreCase) <= 0))
+                    if (int.Parse(VarConfig.SFVar[name + "RetryCount"]) > 0 && (output.IndexOf("Result=PASS", StringComparison.OrdinalIgnoreCase) <= 0))
                     {
                         retrytime++;
                         retryReason = retryReason + "次数" + retrytime + ":" + output + ";";
@@ -279,11 +297,20 @@ namespace SFDemo
             {
                 InputStr = ReadWriteToFlexUI.GetVarFromFLEX(name + "InputStr", name + "Data", name + "TestResult");
 
-                Retry.RetryHandle(GlobalConfig.RetryCount, TimeSpan.FromSeconds(GlobalConfig.RetryInterval), false, delegate
+                Retry.RetryHandle(int.Parse(VarConfig.SFVar[name + "RetryCount"]), TimeSpan.FromMilliseconds(int.Parse(VarConfig.SFVar[name + "RetryInterval"])), false, delegate
                 {
                     if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "ODBC"))
                     {
-                        output = ProcedureExecuter.ExecuteNonQuery(GlobalConfig.ProcedureName, GlobalConfig.BU[2], VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
+                        try
+                        {
+                            output = ProcedureExecuter.ExecuteNonQuery(GlobalConfig.ProcedureName, GlobalConfig.BU[2], VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
+                        }
+                        catch (Exception ex)
+                        {
+                            retrytime++;
+                            retryReason = retryReason + "次数" + retrytime + ":" + "ExecuteProcedureFail";
+                            throw new Exception("ExecuteProcedureFail");
+                        }
                     }
                     else if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "DLL"))
                     {
@@ -294,7 +321,7 @@ namespace SFDemo
                     {
                         //HTTP
                     }
-                    if (GlobalConfig.RetryCount != 0 && output.IndexOf("Result=PASS", StringComparison.OrdinalIgnoreCase) <= 0 && output.IndexOf("Result=FAIL", StringComparison.OrdinalIgnoreCase) <= 0)
+                    if (int.Parse(VarConfig.SFVar[name + "RetryCount"]) > 0 && output.IndexOf("Result=PASS", StringComparison.OrdinalIgnoreCase) <= 0 && output.IndexOf("Result=FAIL", StringComparison.OrdinalIgnoreCase) <= 0)
                     {
                         retrytime++;
                         retryReason = retryReason + "次数" + retrytime + ":" + output + ";";
@@ -340,11 +367,20 @@ namespace SFDemo
             {
                 InputStr = ReadWriteToFlexUI.GetVarFromFLEX(name + "InputStr", name + "Data", name + "TestResult");
 
-                Retry.RetryHandle(GlobalConfig.RetryCount, TimeSpan.FromSeconds(GlobalConfig.RetryInterval), false, delegate
+                Retry.RetryHandle(int.Parse(VarConfig.SFVar[name + "RetryCount"]), TimeSpan.FromMilliseconds(int.Parse(VarConfig.SFVar[name + "RetryInterval"])), false, delegate
                 {
                     if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "ODBC"))
                     {
-                        output = ProcedureExecuter.ExecuteNonQuery(GlobalConfig.ProcedureName, GlobalConfig.BU[3], VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
+                        try
+                        {
+                            output = ProcedureExecuter.ExecuteNonQuery(GlobalConfig.ProcedureName, GlobalConfig.BU[3], VarConfig.SFVar[name + "Station"], VarConfig.SFVar[name + "Step"], InputStr);
+                        }
+                        catch (Exception ex)
+                        {
+                            retrytime++;
+                            retryReason = retryReason + "次数" + retrytime + ":" + "ExecuteProcedureFail";
+                            throw new Exception("ExecuteProcedureFail");
+                        }
                     }
                     else if (FileUtilHelper.CheckIfUncaseString(GlobalConfig.SFWAY, "DLL"))
                     {
@@ -355,7 +391,7 @@ namespace SFDemo
                     {
                         //HTTP
                     }
-                    if (GlobalConfig.RetryCount != 0 && output.IndexOf("Result=PASS", StringComparison.OrdinalIgnoreCase) <= 0 && output.IndexOf("Result=FAIL", StringComparison.OrdinalIgnoreCase) <= 0)
+                    if (int.Parse(VarConfig.SFVar[name + "RetryCount"]) > 0 && output.IndexOf("Result=PASS", StringComparison.OrdinalIgnoreCase) <= 0 && output.IndexOf("Result=FAIL", StringComparison.OrdinalIgnoreCase) <= 0)
                     {
                         retrytime++;
                         retryReason = retryReason + "次数" + retrytime + ":" + output + ";";

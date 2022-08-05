@@ -10,7 +10,7 @@ namespace SFDemo
         {
             if (function != null)
             {
-                for (int i = 0; i < retryTimes; ++i)
+                for (int i = 0; i <= retryTimes; ++i)
                 {
                     try
                     {
@@ -19,7 +19,7 @@ namespace SFDemo
                     }
                     catch (Exception)
                     {
-                        if (i == retryTimes - 1)
+                        if (i == retryTimes)
                         {
                             if (throwIfFail)
                             {
